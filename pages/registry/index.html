@@ -1,0 +1,240 @@
+<div class="bg-light lter b-b wrapper-sm">
+	<ol class="breadcrumb">
+		<li>当前位置：</li>
+		<li class="active">仓库</li>
+	</ol>
+</div>
+<div class='wrapper-md'>
+	<div class="panel panel-default b-blue">
+		<div class="row wrapper">
+			<div class="col-xs-8">
+				<a href="#" class="btn btn-sm btn-success"
+					data-bind="click: showAddPage">创建仓库</a>
+			</div>
+
+		</div>
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<!-- <th>仓库号</th> -->
+						<!-- <th>创建时间</th> -->
+						<th>地址</th>
+						<th>是否安全连接</th>
+						<th>Auth</th>
+						<th>Email</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr data-bind="visible: registryTable().length == 0">
+						<td colspan="7" class="aligncenter">暂无数据</td>
+					</tr>
+					<!-- ko foreach: {data: registryTable, as: '$row'}  -->
+					<tr>
+						<!-- <td>111</td> -->
+						<!--  <td></td> -->
+						<td data-bind="text: $row.server"></td>
+						<td data-bind="text: $row.secure?'是':'否'"></td>
+						<td data-bind="text: $row.auth"></td>
+						<td data-bind="text: $row.email">test</td>
+
+						<td><a data-bind="click: $root.showEditPage">修改</a> | <a
+							data-bind="click: $root.remove">删除</a></td>
+					</tr>
+					<!-- /ko -->
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- 新增修改页面 -->
+<div role="dialog" aria-hidden="true" class="modal fade"
+	data-bind="modal: { show: isAdd }">
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-header'>
+				<a class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></a>
+				<h3 class='modal-title' data-bind="ifnot: currentVO().server">创建仓库</h3>
+				<h3 class='modal-title' data-bind="if: currentVO().server">修改仓库</h3>
+			</div>
+			<div class='modal-body form-horizontal row'>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">地址</label>
+					<div class="col-xs-8">
+						<input type="text" class="form-control" maxlength="32"
+							data-bind="value: currentVO().server,attr:{'disabled':currentVO().server != ''}">
+					</div>
+					<div class="col-xs-1">
+						<span class="text-danger inline m-l-n m-t-sm">*</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">是否安全连接</label>
+					<div class="col-xs-8">
+						<input type="checkbox" data-bind="checked:currentVO().secure" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">Auth</label>
+					<div class="col-xs-8">
+						<input type="text" class="form-control"
+							data-bind="value: currentVO().auth" />
+					</div>
+					<div class="col-xs-1">
+						<span class="text-danger inline m-l-n m-t-sm">*</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">Email</label>
+					<div class="col-xs-8">
+						<input type="text" class="form-control"
+							data-bind="value: currentVO().email" />
+					</div>
+					<div class="col-xs-1">
+						<span class="text-danger inline m-l-n m-t-sm">*</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">立即重启后台</label>
+					<div class="col-xs-8">
+						<input type="checkbox" data-bind="checked:currentVO().reboot" />
+					</div>
+				</div>
+			</div>
+			<div class='modal-footer' style="text-align: center;">
+				<button type="button" class="btn btn-info"
+					data-bind="click: okBtnFun">确定</button>
+				<a class="btn btn-default" data-dismiss="modal">取消</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var scripts = [ null, "api/MISC/MISC.js" ]
+	$('.page-content-area').ace_ajax('loadScripts', scripts, function(args) {
+
+		function RoleViewModel() {
+			var self = this;
+			this.isAdd = ko.observable(false);
+
+			this.currentVO = ko.observable({
+				"server" : '',
+				"auth" : '',
+				"email" : '',
+				"reboot" : false,
+				"secure" : false
+			});
+
+			this.oldVO = ko.observable({});
+
+			//显示添加页面
+			this.showAddPage = function() {
+				self.currentVO({
+					"server" : '',
+					"auth" : '',
+					"email" : '',
+					"reboot" : false,
+					"secure" : false
+				});
+				self.isAdd(true);
+			}
+
+			//创建角色
+			this.createRole = function(currentVO) {
+				//ko.validation.group(self.currentVO).showAllMessages();
+				//if(self.currentVO.isValid()){
+				$.MISC.registry.create(currentVO(), function(data) {
+					self.isAdd(false);
+					if (!data.exception) {
+						alert("创建成功！");
+					} else {
+						alert("创建失败！");
+					}
+					self.getData()
+				});
+				//}
+			}
+			//显示编辑角色页面
+			this.showEditPage = function(object, event) {
+				self.currentVO({
+					"server" : ko.observable(object.server),
+					"auth" : ko.observable(object.auth),
+					"email" : ko.observable(object.email),
+					"reboot" : ko.observable(object.reboot),
+					"secure" : ko.observable(object.secure)
+				});
+				self.isAdd(true);
+			}
+
+			//修改角色信息
+			this.editRole = function(currentVO) {
+				var params = {
+					"server" : currentVO().server(),
+					"auth" : currentVO().auth(),
+					"email" : currentVO().email(),
+					"reboot" : currentVO().reboot(),
+					"secure" : currentVO().secure()
+				}
+				$.MISC.registry.update({
+					id : currentVO().server()
+				}, params, function(data) {
+					self.isAdd(false);
+					if (!data.exception) {
+						alert("修改成功！");
+					} else {
+						alert("修改失败！");
+					}
+					self.getData()
+				});
+			}
+
+			//确定按钮
+			this.okBtnFun = function(object) {
+				//如果id为空，则新增
+				if (typeof self.currentVO().server != 'function') {
+					self.createRole(self.currentVO);
+					//修改
+				} else {
+					self.editRole(self.currentVO);
+				}
+
+			}
+			//删除角色
+			this.remove = function(roleObj) {
+				var server = roleObj.server;
+				confirm("确定删除[" + server + "]？", function(arg) {
+					$.MISC.registry.del({
+						id : roleObj.server
+					}, function(data) {
+						self.getData()
+						alert("删除[" + server + "]成功！")
+
+					});
+				}, function(data) {
+					alert("删除[" + server + "]失败！")
+				});
+			}
+
+			this.searchParam = ko.observable({
+				name : ""
+			})
+			this.search = function() {
+				self.registryTable.params(self.searchParam());
+			}
+
+			this.registryTable = ko.observable([]);
+			this.getData = function() {
+				$.MISC.registry.query(null, function(data) {
+					self.registryTable(data);
+				})
+			}
+			this.getData()
+		}
+
+		ko.applyBindings(new RoleViewModel(), $('#page-content')[0]);
+
+	});
+</script>

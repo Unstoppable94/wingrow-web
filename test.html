@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<style>
+	.red{color:red;}
+</style>
+<body id="body">
+	<div data-bind="attr:{class:show == 2  ? 'red' : ''}">测试class</div>
+	<div data-bind="style:{color:show == 2  ? 'red' : ''}">测试css</div>
+	<div data-bind="text:teststring,visible:show == 2 ? true : false,attr:{class:'red',style:'margin-top:20px',title:titleStr},style:{'fontSize':'20px'}"></div>
+	<input type="text" placeholder='请输入' data-bind="value:teststring, valueUpdate: 'afterkeydown',ie8placeholder:null">
+	<ul data-bind="foreach:arrayTemp">
+		<li data-bind="text:$context.teststring"></li>
+	</ul>
+    <p data-bind="if:iftest">我是if的测试</p>
+    <p>aaaaaaaaaaa</p>
+    <p data-bind="text:obj.data"></p>
+    <div data-bind="with:obj">
+	   	<p data-bind="text:data"></p>
+	   	<p data-bind="text:$root.teststring"></p>
+	   	<div data-bind="with:children">
+	   		<p data-bind="text:data"></p>
+	   		<p data-bind="text:$parent.date"></p>
+	   	</div>
+	</div>
+    <div data-bind="component:{name:'peple',params:{name:'huangmj'}}"></div>
+    <button data-bind="event:{mousedown:mousedownFun,click:clickFun}">按钮</button>
+    <input type="text" data-bind="enable:true,hasFocus:true">
+    <input type="checkbox" data-bind="checked:checked">
+
+	<div>
+		<input type="checkbox" name='aa' value='zhangsan' data-bind='checked:checkedArray'>张三
+		<input type="checkbox" name='aa' value='lisi' data-bind='checked:checkedArray'>李四
+		<input type="checkbox" name='aa' value='wangwu' data-bind='checked:checkedArray'>王五
+	</div>
+	<button data-bind='click:changeData'>写数据</button>
+	<select data-bind="options:arrayTemp,optionsText: 'name',value:selectedValue"></select>
+	<button data-bind="click:showSelectedValue">显示结果</button>
+
+</body>
+<script src="assets/js/knockout.js"></script>
+</html>
+<script>
+	var viewModel = function(){
+		var self=this;
+		teststring = ko.observable("我是绑定的数据");
+		show=2;
+		htmlstr="<span style='color:red'>html</span>";
+		titleStr='我是标题';
+		arrayTemp=[{name:'苹果'},{name:'香蕉'}];
+		iftest=true;
+		var obj={
+			data:'我是数据',
+			date:'2017',
+			name:'aaa',
+			children:{
+				data:'test'
+			}
+		};
+		clickFun=function(){
+			alert(this.checkedArray())
+		};
+		mousedownFun=function(){
+			console.log('mousedown')
+		};
+		checked=ko.observable(false);
+		checkedArray=ko.observable(['zhangsan','lisi']);
+		changeData=function(){
+			self.checkedArray(['zhangsan','lisi','wangwu']);
+			alert(self.checkedArray())
+		},
+		selectedValue=ko.observable();
+		showSelectedValue = function(){
+			alert(self.selectedValue().name)
+		}
+	};
+	ko.components.register('peple', {
+	    template: '<div class="red" data-bind="text: name"></div>'
+	});
+	ko.bindingHandlers.ie8placeholder = {
+	    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+	        // This will be called when the binding is first applied to an element
+	        // Set up any initial state, event handlers, etc. here
+	        console.log('自定义绑定初始化')
+	        //element.value = element.placeholder;
+	    },
+	    update: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+	        // This will be called once when the binding is first applied to an element,
+	        // and again whenever any observables/computeds that are accessed change
+	        // Update the DOM element based on the supplied values here.
+	        //alert(valueAccessor())
+	    }
+	};
+	ko.applyBindings(viewModel, document.getElementById('body'));
+
+</script>

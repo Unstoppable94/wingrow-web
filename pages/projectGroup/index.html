@@ -1,0 +1,272 @@
+<div class="bg-light lter b-b wrapper-sm">
+	<ol class="breadcrumb">
+		<li>当前位置：</li>
+		<li class="active">项目组</li>
+	</ol>
+</div>
+<div class='wrapper-md'>
+	<div class="panel panel-default b-blue">
+		<div class="row wrapper">
+			<div class="col-xs-8">
+				<a href="#" class="btn btn-sm btn-success"
+					data-bind="click: showAddPage">创建项目组</a>
+			</div>
+			<div class="col-xs-3">
+				<div class="input-group">
+					<span class="input-group-addon">项目组名称</span> <input type="text"
+						placeholder="请输入名称" class="form-control input-sm"
+						data-bind="enterKey: search, textInput: searchParam().name">
+				</div>
+			</div>
+			<div class="col-xs-1">
+				<a class="btn btn-default btn-sm" data-bind="click: search">搜索</a>
+			</div>
+		</div>
+		<div class="table-responsive" data-bind="with: roleTable">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>项目组名称</th>
+						<th>创建时间</th>
+						<th>项目组描述</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- <tr data-bind="visible: showNoData">
+            <td colspan="4" class="aligncenter">
+             	 暂无数据
+            </td>
+          </tr> -->
+					<!-- ko foreach: {data: pagedRows, as: '$row'}  -->
+					<tr>
+						<td data-bind=" attr:{'title': $row.name}"><a
+							data-bind="text: $row.name,attr:{href:'#pages/projectGroup/show?id=' + $row.id}"></a>
+						</td>
+						<td
+							data-bind="text: moment($row.createtime).format('YYYY-MM-DD HH:mm:ss')"></td>
+						<td
+							data-bind="text: $row.description, attr:{'title': $row.description}"></td>
+
+						<td><span><a data-bind="click: $root.showEditPage">修改</a>
+								| </span> <span><a data-bind="click: $root.remove">删除</a></span></td>
+
+					</tr>
+					<!-- /ko -->
+				</tbody>
+			</table>
+		</div>
+		  <footer class="panel-footer" data-bind="with: roleTable, visible: roleTable.pages() > 1">
+      <ul class="pagination">
+        <li data-bind="css: leftPagerClass, click: gotoPage(1)">
+          <a href="#">首页</a>
+        </li>
+        <li data-bind="css: leftPagerClass, click: prevPage">
+          <a href="#">&laquo;</a>
+        </li>
+        <li >
+          <a href="#"  data-bind="text: currentPage"></a>
+        </li>
+        <li data-bind="css: rightPagerClass, click: nextPage">
+          <a href="#">&raquo;</a>
+        </li>
+        <li data-bind="css: rightPagerClass, click: gotoPage(pages())">
+          <a href="#">末页</a>
+        </li>
+        <li class="page-control-li">
+          <div class="input-group form-group-sm">
+            <input type="text" class="form-control" data-bind="value: targetPage"  />
+            <div class="input-group-btn">
+              <a href="#" class="btn btn-sm btn-default" data-bind="click: gotoTargetPage()">跳转</a>
+            </div>
+          </div>
+          <div class="page-info-div" data-bind="text: recordsText"></div>
+        </li>
+      </ul>
+    </footer>  
+	</div>
+</div>
+
+<!-- 新增修改页面 -->
+<div role="dialog" aria-hidden="true" class="modal fade"
+	data-bind="modal: { show: isAdd }">
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-header'>
+				<a class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></a>
+				<h3 class='modal-title' data-bind="ifnot: currentVO().id">创建项目组</h3>
+				<h3 class='modal-title' data-bind="if: currentVO().id">修改项目组</h3>
+			</div>
+			<div class='modal-body form-horizontal row'>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">项目组名称</label>
+					<div class="col-xs-8">
+						<input type="text" class="form-control" maxlength="32"
+							data-bind="value: currentVO().name">
+					</div>
+					<div class="col-xs-1">
+						<span class="text-danger inline m-l-n m-t-sm">*</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">项目组描述</label>
+					<div class="col-xs-8">
+						<textarea name="" id="" cols="30" rows="4" maxlength="255"
+							class="form-control" data-bind="value: currentVO().description"></textarea>
+					</div>
+				</div>
+
+			</div>
+			<div class='modal-footer' style="text-align: center;">
+				<button type="button" class="btn btn-info"
+					data-bind="click: okBtnFun">确定</button>
+				<a class="btn btn-default" data-dismiss="modal">取消</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var scripts = [ null, "api/systems/role/role.js",
+			"api/projectGroup/projectGroup.js" ]
+	$('.page-content-area').ace_ajax(
+			'loadScripts',
+			scripts,
+			function(args) {
+
+				function viewModel() {
+					var self = this;
+					this.isAdd = ko.observable(false);
+
+					this.currentVO = ko.validatedObservable({
+						"id" : ko.observable(null),
+						"name" : ko.observable("").extend({
+							required : true,
+							cscNameRule : true,
+							maxLength : 32
+						}),
+						"description" : ko.observable("").extend({
+							maxLength : 255
+						})
+					});
+					this.oldVO = ko.observable({});
+
+					//显示添加页面
+					this.showAddPage = function() {
+						self.currentVO.fromJSON({
+							id : "",
+							name : "",
+							description : ""
+						});
+						self.isAdd(true);
+					}
+					//创建
+					this.createProjectGroup = function(currentVO) {
+						params = {
+							id : null,
+							name : currentVO.name(),
+							description : currentVO.description()
+						};
+						ko.validation.group(self.currentVO).showAllMessages();
+						if (self.currentVO.isValid()) {
+							$.projectGroup.create(params, function(data) {
+								if (!(data.exception)) {
+									self.isAdd(false);
+									self.roleTable.refreshData();
+									alert("创建成功！");
+								}
+							});
+						}
+					}
+
+					//显示编辑页面
+					this.showEditPage = function(object, event) {
+						self.oldVO({
+							name : object.name,
+							description : object.description
+						});
+						self.currentVO.fromJSON(object);
+
+						self.isAdd(true);
+					}
+					//判断是否已修改
+					this.isChanged = function(o1, o2) {
+						if (o1.name == o2.name().trim()
+								&& o1.description == o2.description().trim()) {
+							return false;
+						} else {
+							return true;
+						}
+					}
+					//修改信息
+					this.editGroup = function(currentVO) {
+						if (self.isChanged(self.oldVO(), currentVO)) {
+							params = {
+								id : currentVO.id(),
+								name : currentVO.name().trim(),
+								description : currentVO.description().trim()
+							};
+							$.projectGroup.update({
+								id : params.id
+							}, params, function(data) {
+								if (!data.exception) {
+									self.isAdd(false);
+									self.roleTable.refreshData();
+									alert("修改成功！");
+								}
+
+							});
+						} else {
+							self.isAdd(false);
+						}
+					}
+
+					//确定按钮
+					this.okBtnFun = function(object) {
+						console.log(self.currentVO().id())
+						//如果id为空，则新增
+						if (!self.currentVO().id()) {
+							self.createProjectGroup(self.currentVO());
+							//修改
+						} else {
+							self.editGroup(self.currentVO());
+						}
+					}
+					//删除角色
+					this.remove = function(roleObj) {
+						var name = roleObj.name;
+						confirm("确定删除[" + name + "]？", function(arg) {
+							$.projectGroup.del({
+								id : roleObj.id
+							}, function(data) {
+								if (!data.exception) {
+									self.roleTable.refreshData();
+									alert("删除[" + name + "]成功！")
+								}
+							});
+						});
+					}
+
+					this.searchParam = ko.observable({
+						name : ""
+					})
+					this.search = function() {
+						self.roleTable.params(self.searchParam());
+					}
+					//this.roleTable = projectGroupTempData;
+					this.roleTable = new DataTable({
+						perPage : 10,
+						path : './webapi/projectgroup',
+						loader : function(result) {
+							result.name_ = csc.util.trimName(result.name, 16);
+							result.description_ = csc.util.trimName(
+									result.description, 21);
+							return result;
+						}
+					});
+				}
+
+				ko.applyBindings(new viewModel(), $('#page-content')[0]);
+
+			});
+</script>

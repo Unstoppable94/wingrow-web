@@ -1,0 +1,230 @@
+<div class="bg-light lter b-b wrapper-sm">
+  <ol class="breadcrumb">
+    <li>当前位置：</li>
+    <li class="active">项目</li>
+  </ol>
+</div>
+<div class="wrapper-md">
+  <div class="panel panel-default b-blue wrapper-md">
+    <div class="row">
+      <div class="col-xs-4">
+        <a href="#pages/project/index" class="btn btn-sm btn-default" >返回</a>
+        <button class="btn btn-info btn-sm" data-bind="click:triggerBuild">构建</button>
+      </div>
+      <div class="col-xs-2">
+        <div class="input-group">
+          <span class="input-group-addon">构建号</span>
+          <input type="text" placeholder="请输入名称" data-bind="value:param.buildNumber" class="form-control input-sm" >
+        </div>       
+      </div>
+      <div class="col-xs-2">
+        <div class="input-group input-group-sm">
+          <span class="input-group-addon">构建状态</span>
+          <select class="form-control" data-bind="value:param.buildStatus ">
+            <option value="">全部</option>
+            <option value="success">成功</option>
+            <option value="failed">失败</option>
+            <option value="stop">终止</option>
+          </select>
+        </div>       
+      </div>
+      <div class="col-xs-2">
+        <div class="input-group input-group-sm">
+          <span class="input-group-addon">所处步骤</span>
+          <select class="form-control input-sm" data-bind="options:$root.stagesInfoList,optionsText:'name',optionsValue:'id',value:param.latestStage" ></select>
+        </div>       
+      </div>
+      <div class="col-xs-2">
+        <a class="btn btn-default btn-sm" data-bind='click:searchData'>搜索</a>
+        <a class="btn btn-default btn-sm" data-bind="click: reset">重置</a>
+      </div>        
+    </div>
+    <p> </p>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>构建号</th>
+            <th>构建开始时间</th>
+            <th>构建状态</th>
+            <th>所处步骤</th>
+            <th>所处步骤状态</th>
+            <th>执行时长</th>
+            <th>查看日志</th>
+            <th>结果物</th>
+            <th>image下载命令</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- ko foreach: {data: projectTable, as: '$row'}  -->
+          <tr>
+            <td><a data-bind="text:$row.number,click:$root.showBtn"></a></td>
+            <td data-bind="text:moment($row.buildDate).format('YYYY/MM/DD HH:mm:ss')"></td>
+            <td>
+              <span data-bind="if:$row.status=='IN_PROGRESS'">构建中</span>
+              <span data-bind="if:$row.status=='FAILURE'">失败</span>
+              <span data-bind="if:$row.status=='SUCCESS'">成功</span>
+              <span data-bind="if:$row.status=='NOTBUILD'">没有构建</span>
+            </td>
+            <td data-bind="text:$row.lastStage"></td>
+            <td>
+              <span data-bind="if:$row.lastStageStatus=='IN_PROGRESS'">构建中</span>
+              <span data-bind="if:$row.lastStageStatus=='FAILURE'">失败</span>
+              <span data-bind="if:$row.lastStageStatus=='SUCCESS'">成功</span>
+              <span data-bind="if:$row.lastStageStatus=='NOTBUILD'">没有构建</span>
+            </td>
+            <td data-bind="text:$row.duration + ' ms'"></td>
+            <td><a data-bind="attr:{href:'./webapi/download?name=' + encodeURIComponent($row.logUrl)}">日志下载</a></td>
+            <td>
+              <span data-bind="if:!$row.artifactUrl">-</span>
+              <a data-bind="if:$row.artifactUrl,attr:{href:'./webapi/download?name=' + encodeURIComponent($row.artifactUrl)}">结果下载</a>
+
+            </td>
+            <td data-bind="text:$row.imageUrl"></td>
+          </tr>
+          <!-- /ko -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div role="dialog" aria-hidden="true" class="modal fade" data-bind="modal: { show: showModal }">
+  <div class='modal-dialog modal-lg' style="width:1200px">
+    <div class='modal-content '>
+      <div class='modal-header'>
+        <a class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></a>
+        <h3 class='modal-title'>查看项目</h3>
+      </div>
+      <div class='modal-body'>
+        <div role="tabpanel" class="tab-pane active" id="home">
+          <div class="building-legend" style="margin-left:16px">
+            <div class="legend-success">
+              <div class="legend-img"></div>
+              <div class="legend-name">执行成功</div>
+            </div>
+            <div class="legend-error">
+              <div class="legend-img"></div>
+              <div class="legend-name">执行失败</div>
+            </div>
+            <div class="legend-stop">
+              <div class="legend-img"></div>
+              <div class="legend-name">终止</div>
+            </div>
+          </div>
+          <div id="buildSteps" class="timeline-box" style="padding:10px 0 70px"></div>
+        </div>
+        <div class='modal-footer' style="text-align:center;">
+          <button type="button" class="btn btn-info" data-dismiss="modal">确定</button>
+          <a class="btn btn-default" data-dismiss="modal">取消</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    var scripts = [null,"api/project/project.js",'api/MISC/MISC.js'];
+    $('.page-content-area').ace_ajax('loadScripts', scripts, function(args) {
+      function viewModel() {
+        var self = this;
+
+      //构建步骤接口
+      stagesInfo = ko.observable("");
+      this.stagesInfoList = ko.observableArray();
+      $.MISC.stagesInfo.query(null,function(data){
+        console.log(data)
+        data.unshift({"name":"全部","id":""});
+        self.stagesInfoList(data);
+      });
+
+      this.triggerBuild = function(){
+        $.project.triggerBuild({id:args.name},function(data){
+          if(!data.exception){
+            alert("开始构建");
+            self.loadData();
+          }
+        })
+      }
+      self.projectTable = ko.observableArray();
+      
+      this.loadData = function(param){
+        var _param = param ? param : null
+        $.project.buildList({id:args.name},_param,function(data){
+          self.projectTable(data.results)
+        })
+      }
+
+      this.param = {
+        buildNumber:ko.observable(),
+        buildStatus:ko.observable(),
+        latestStage:ko.observable(),
+      };
+
+      this.loadData();
+
+      this.searchData = function(){
+        var param = {
+          buildNumber:self.param.buildNumber(),
+          buildStatus:self.param.buildStatus(),
+          latestStage:self.param.latestStage(),
+        }
+        this.loadData(param);
+      }
+
+      this.showModal = ko.observable(false);
+
+      this.showBtn = function(obj){
+        self.showModal(true);
+        $.project.buildInfo({id:args.name,buildNumber:obj.number},function(data){
+
+          buildProjects(data.stages,$("#buildSteps"))
+        })
+      }
+
+      this.reset = function(){
+        $('input').val("");
+        $('select option:first').prop('selected',true);
+        var param = {
+          buildNumber:"",
+          buildStatus:"",
+          latestStage:""
+        }
+        this.loadData(param);
+      }
+      
+      function buildProjects(data,content){
+        var item = $("<div class='timeline-item'></div>").appendTo(content);
+        item.append('<div class="item-stages"></div>');
+        if(data && data.length > 0){
+          var _stageBox = item.find(".item-stages");
+          $.each(data,function(a,b){
+            var _stage = $("<div class='item-stage'></div>");
+            _stageBox.append(_stage);
+            if(a != data.length-1)
+              _stage.addClass("have-triangle");
+            $("<div class='stage-status'></div>").css("background-image",'url(assets/img/steps/' + getColorByStatus(b.status) + ')').appendTo(_stage);
+            _stage.append('<div class="stage-name text-ellipsis">' + b.name +'</div>');
+            _stage.append('<div class="stage-time">' + b.durationMillis + ' ms' +'</div>');
+          });
+        }
+
+      }
+      function getColorByStatus(status){
+        var img = '';
+        switch(status){
+          case "SUCCESS":
+          img = 'success';
+          break;
+          case "FAILED":
+          img = 'failed';
+          break;
+          default:
+          img = 'stop';
+          break;
+        }
+        return img + '.png';
+      }
+    }
+    ko.applyBindings(new viewModel(), $('#page-content')[0]);
+  })
+
+</script>

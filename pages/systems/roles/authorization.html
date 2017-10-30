@@ -1,0 +1,800 @@
+<link href="assets/lib/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
+<div class="bg-light lter b-b wrapper-sm">
+	<ol class="breadcrumb">
+		<li>当前位置：</li>
+		<li>系统</li>
+		<li><a href="#pages/systems/roles/index">角色管理</a></li>
+		<li class="active">菜单角色授权</li>
+		<!-- <li class="active" id="thisRole"></li> -->
+	</ol>
+</div>
+<div class="wrapper">
+  <a class="btn btn-sm btn-default" href="#pages/systems/roles/index"><i class="fa fa-arrow-left"></i> 返回</a>
+</div>
+
+
+<div class="wrapper">
+
+  <ul class="nav nav-tabs" role="tablist" data-bind="foreach: tabs">
+    <li role="presentation" data-bind="css: {'active': active}"><a data-bind="attr: {href: '#tabs_'+$index()}, text: name" role="tab" data-toggle="tab"></a></li>
+  </ul>
+
+  <div class="tab-content" data-bind="foreach: tabs">
+    <div role="tabpanel" class="tab-pane" data-bind="attr: {id: 'tabs_'+$index()}, css: {'active': active}">
+    	<div>
+			<ul class="ztree" data-bind="attr: {id: 'ztree_'+$index(), type: type}"></ul>
+		</div>
+		<div>
+			<a class="btn btn-info" style="margin-bottom:50px" data-bind="click:function(data, event){ $root.menuSave('ztree_'+$index(), type) }">授权</a>
+		</div>
+    </div>
+  </div>
+
+</div>
+
+
+<script type="text/javascript">
+var scripts = ["api/reports/report.js", 'assets/lib/zTree/js/jquery.ztree.core.js', 'assets/lib/zTree/js/jquery.ztree.excheck.js', "api/systems/role/role.js"]
+  $('.page-content-area').ace_ajax('loadScripts', scripts, function(args) {
+	var uuid = args.uuid;
+	var name = decodeURI(decodeURI(args.name));
+	//$("#thisRole").html(name);
+	function RoleViewModel() {
+		var self = this;    
+		this.tabs = ko.observableArray();
+		if(name == '系统管理员'
+		||name == '运营管理员'
+		||name == '运维管理员'
+		||name == '安全管理员'
+		||name == '安全审计员'
+		||name == 'VDC管理员'){
+			this.tabs.push({type:'oper', name: "运营门户", active: true});
+		}else if(name == '普通用户'){
+			this.tabs.push({type:'self', name: "自助门户", active: true});
+		}else{
+			this.tabs.push({type:'oper', name: "运营门户", active: true});
+			this.tabs.push({type:'self', name: "自助门户", active: false});
+		}
+		
+		//setting.check.enable = true
+		this.isAdd = ko.observable(false);
+			var setting = {
+				check: {
+					enable: true
+				},
+		      	view:{
+		       		showIcon:false,
+		       	 	showLine:false
+		      	}
+		    };
+			//不启用三员管理，运营门户权限菜单
+			var zNodes =[        
+					      { id:"firstPage",name:"首页", isParent:true,checked:false},
+					      
+					      { id:"service",name:"服务", isParent:true,open:false,checked:false,
+					          children: [
+					            { id:"proDef",name:"产品定义" ,checked:false},
+					            { id:"servManage",name:"服务管理" ,checked:false}
+					          ]
+					      },
+					      {id:"resource", name:"资源", open:false,checked:false,
+					        children: [
+					          { id:"dataCenter", name:"数据中心",checked:false},
+					          { id:"diskAcce",name:"可用分区",checked:false},
+					          { id:"resoInstance",name:"资源实例",checked:false,
+					        	  children:[
+					        	            {id:"cloudServer",name:"云主机",checked:false,
+					        	            	children:[
+					        	            	          {id:"cloudServerCreate",name:"创建云主机",checked:false},
+					        	            	          {id:"cs_PowerOn",name:"开机",checked:false},
+					        	            	          {id:"cs_PowerOff",name:"关机",checked:false},
+					        	            	          {id:"cs_Reboot",name:"重启(强制重启)",checked:false},
+					        	            	          {id:"cs_Console",name:"控制台",checked:false},
+					        	            	          {id:"cs_Resomodify",name:"资源调整",checked:false},
+					        	            	          {id:"cs_Wait",name:"挂起",checked:false},
+					        	            	          {id:"cs_Recovery",name:"恢复",checked:false},
+					        	            	          {id:"cs_TimeMidify",name:"有效时间变更",checked:false},
+					        	            	          {id:"cs_Stop",name:"终止",checked:false},
+					        	            	          {id:"cs_Delete",name:"删除",checked:false},
+
+					        	            	          {id:"cs_Minitor",name:"监控",checked:false},
+				
+					        					]  
+					        	  			},
+					        	            {id:"cloudDisk",name:"云硬盘",checked:false,
+					        	            	children:[
+					        	            	          {id:"cd_DiskCreate",name:"创建云硬盘",checked:false},
+					        	            	          {id:"cd_Extend",name:"扩展",checked:false},
+					        	            	          {id:"cd_Delete",name:"删除",checked:false}
+					        	            	]
+					        	            },
+					        	            {id:"publicIp",name:"公网IP",checked:false,
+					        	            	children:[
+					        	            	          {id:"pubIp_Create",name:"创建公网IP",checked:false},
+					        	            	          {id:"pubIp_CS_Bind",name:"绑定云主机",checked:false},
+					        	            	          {id:"pubIp_LB_Bind",name:"绑定负载均衡器",checked:false},
+					        	            	          {id:"pubIp_CS_Unbind",name:"解绑",checked:false},
+					        	            	          {id:"pubIp_TimeModify",name:"有效时间变更",checked:false},
+					        	            	          {id:"pubIp_Stop",name:"终止",checked:false},
+					        	            	          {id:"pubIp_Delete",name:"删除",checked:false}
+					        	            	]
+					        	            },
+					        	            {id:"loadBalan",name:"负载均衡器",checked:false,
+					        	            	children:[
+					        	            	          {id:"lb_Creat",name:"创建负载均衡器",checked:false},
+					        	            	          {id:"lb_VIP_Add",name:"添加VIP",checked:false},
+					        	            	          {id:"lb_VIP_Edit",name:"编辑VIP",checked:false},
+					        	            	          {id:"lb_VIP_Del",name:"删除VIP",checked:false},
+					        	            	          {id:"lb_TimeModify",name:"有效时间变更",checked:false},
+					        	            	          {id:"lb_enable",name:"启用",checked:false},
+					        	            	          {id:"lb_disable",name:"禁用",checked:false},
+					        	            	          {id:"lb_Stop",name:"终止",checked:false},
+					        	            	          {id:"lb_Delete",name:"删除",checked:false}
+					        	            	]
+					        	            },
+					        	            {id:"sshKey",name:"SSH密钥",checked:false,
+					        	            	children:[
+					        	            	          {id:"ssh_key_Create",name:"创建密钥",checked:false},
+					        	            	          {id:"ssh_key_DownLoad",name:"下载",checked:false},
+					        	            	          {id:"ssh_key_CS_Watch",name:"查看挂载云主机",checked:false},
+					        	            	          {id:"ssh_key_TimeModify",name:"有效时间变更",checked:false},
+					        	            	          {id:"ssh_key_Stop",name:"终止",checked:false},
+					        	            	          {id:"ssh_key_Delete",name:"删除",checked:false}
+					        	            	]
+					        	            },
+					        	            {id:"instanStore",name:"对象存储",checked:false,
+					        	            	children:[
+					        	            	          {id:"ins_Store_Create",name:"创建对象存储",checked:false},
+					        	            	          {id:"ins_Store_Upload",name:"上传",checked:false},
+					        	            	          {id:"ins_Store_TimeModify",name:"有效时间变更",checked:false},
+					        	            	          {id:"ins_Store_Stop",name:"终止",checked:false},
+					        	            	          {id:"ins_Store_Delete",name:"删除对象存储",checked:false}
+					        	            	]
+					        	            }					        	            
+					        	            ]
+					          },
+					          { id:"bussiCut",name:"业务割接",checked:false},
+					          { id:"resourceBack",name:"资源回收",checked:false}
+					        ]
+					      },
+					      { id:"orderForm",name:"订单", isParent:true,checked:false},
+					      { id:"vdcManger",name:"VDC管理", open:false,checked:false,
+					          children: [
+					            { id:"vdcModiAppl",name:"VDC变更申请",checked:false}
+					          ]
+					      },
+					      { id:"vpcManger",name:"VPC管理", isParent:true,checked:false},
+					      { id:"busiSystem",name:"业务系统", isParent:true,checked:false},
+					      { id:"appli",name:"应用", open:false,checked:false,
+					          children: [
+					            { id:"softWare",name:"软件",checked:false},
+					            { id:"script",name:"脚本",checked:false},
+					            { id:"softInstall",name:"软件安装",checked:false},
+					            { id:"softUpdate",name:"软件升级",checked:false},
+					            { id:"installLog",name:"安装日志",checked:false}
+					          ]
+					        },		        
+					      { id:"work",name:"工作", open:false,checked:false,
+					          children: [
+					            { id:"newWork",name:"新建工作",checked:false },
+					            { id:"myWork",name:"我的工作" ,checked:false}
+					          ]
+					      },
+					      { id:"billing",name:"计费", open:false,checked:false,
+					          children: [
+					            { id:"bilRule",name:"计费规则",checked:false },
+					            { id:"bilCount",name:"计费清单统计" ,checked:false}
+					          ]
+					      },
+					      { id:"report",name:"报表", open:false,checked:false,
+					          children: [
+					            { id:"systemDesign",name:"报表统计", open:false,checked:false ,
+					            	 children: [
+									            { id:"vdcRepo",name:"VDC报表",checked:false },
+									            { id:"chargeRepo",name:"计费报表" ,checked:false},
+									            { id:"serverRepo",name:"物理主机报表",checked:false },
+									            { id:"cloudServerRepo",name:"云主机报表",checked:false },
+									            { id:"selfDefRepo1",name:"自定义报表列表", isParent:true,open:false,checked:false }
+									 ]
+					            },
+					            { id:"repoDef",name:"自定义报表",open:false ,checked:false}
+					          ]
+					      },
+					      { id:"system",name:"系统", open:false,checked:false,
+					          children: [
+								{ id:"sysUserManage",name:"用户管理",checked:false },
+					            { id:"sysRoleManage",name:"角色管理",checked:false ,
+					            	 children: [
+									            { id:"roleCreat",name:"创建角色",checked:false },
+									            { id:"roleModify",name:"修改角色" ,checked:false},
+									            { id:"roleDel",name:"删除角色",checked:false },
+									            { id:"roleAllo",name:"分配用户",checked:false },
+									            { id:"roleMenuPriv",name:"角色菜单授权",checked:false }
+									 ]
+					            },
+					            { id:"flowManage",name:"流程管理" ,checked:false},
+					            { id:"serverConf",name:"服务器配置" ,checked:false,
+					            	children: [
+									            { id:"repoConf",name:"集算报表平台配置",checked:false },									         
+									            { id:"ftpServerConf",name:"FTP配置",checked:false },
+									            { id:"chefServerConf",name:"Chef配置",checked:false }/* ,
+									            { id:"emailServerConf",name:"邮件服务器配置",checked:false } */
+									 ]
+					            },
+					            { id:"warnConf",name:"告警配置" ,checked:false},
+					            { id:"firstPgConf",name:"首页配置" ,checked:false},
+					            { id:"license",name:"License" ,checked:false},
+					            { id:"wordConf",name:"字典管理" ,checked:false},
+					            { id:"resoProperty",name:"资源属性" ,checked:false},
+					            { id:"warn",name:"告警" ,checked:false,
+					            	children: [
+									            { id:"sysWarn",name:"系统告警",checked:false },									         
+									            { id:"cloudServerWarn",name:"云主机告警",checked:false },
+									            { id:"vdcMountWarn",name:"VDC配额告警",checked:false }
+						
+									 ]
+					            },
+					            { id:"notify",name:"通知" ,checked:false,
+					            	children: [
+									            { id:"sysNotify",name:"系统通知",checked:false }									         
+									            /* { id:"msgNotify",name:"短信通知",checked:false },
+									            { id:"emailNotify",name:"邮件通知",checked:false } */
+						
+									 ]
+					            },
+					            { id:"operaLog",name:"操作日志" ,checked:false},
+					            { id:"loginLog",name:"登录日志" ,checked:false}
+					          ]
+					      }					      
+						  ];
+			//启用三员管理，运营门户权限菜单
+			var zNodes3 =[        
+					      { id:"firstPage",name:"首页", isParent:true,checked:false},
+					      
+					      { id:"service",name:"服务", isParent:true,open:false,checked:false,
+					          children: [
+					            { id:"proDef",name:"产品定义" ,checked:false},
+					            { id:"servManage",name:"服务管理" ,checked:false}
+					          ]
+					      },
+					      {id:"resource", name:"资源", open:false,checked:false,
+					        children: [
+					          { id:"dataCenter", name:"数据中心",checked:false},
+					          { id:"diskAcce",name:"可用分区",checked:false},
+					          { id:"resoInstance",name:"资源实例",checked:false,
+					        	  children:[
+					        	            {id:"cloudServer",name:"云主机",checked:false,
+					        	            	children:[
+					        	            	          {id:"cloudServerCreate",name:"创建云主机",checked:false},
+					        	            	          {id:"cs_PowerOn",name:"开机",checked:false},
+					        	            	          {id:"cs_PowerOff",name:"关机",checked:false},
+					        	            	          {id:"cs_Reboot",name:"重启(强制重启)",checked:false},
+					        	            	          {id:"cs_Console",name:"控制台",checked:false},
+					        	            	          {id:"cs_Resomodify",name:"资源调整",checked:false},
+					        	            	          {id:"cs_Wait",name:"挂起",checked:false},
+					        	            	          {id:"cs_Recovery",name:"恢复",checked:false},
+					        	            	          {id:"cs_TimeMidify",name:"有效时间变更",checked:false},
+					        	            	          {id:"cs_Stop",name:"终止",checked:false},
+					        	            	          {id:"cs_Delete",name:"删除",checked:false},
+					        	            	          {id:"cs_Minitor",name:"监控",checked:false}
+
+					        					]  
+					        	  			},
+					        	            {id:"cloudDisk",name:"云硬盘",checked:false,
+					        	            	children:[
+					        	            	          {id:"cd_DiskCreate",name:"创建云硬盘",checked:false},
+					        	            	          {id:"cd_Extend",name:"扩展",checked:false},
+					        	            	          {id:"cd_Delete",name:"删除",checked:false}
+					        	            	]
+					        	            },
+					        	            {id:"publicIp",name:"公网IP",checked:false,
+					        	            	children:[
+					        	            	          {id:"pubIp_Create",name:"创建公网IP",checked:false},
+					        	            	          {id:"pubIp_CS_Bind",name:"绑定云主机",checked:false},
+					        	            	          {id:"pubIp_LB_Bind",name:"绑定负载均衡器",checked:false},
+					        	            	          {id:"pubIp_CS_Unbind",name:"解绑",checked:false},
+					        	            	          {id:"pubIp_TimeModify",name:"有效时间变更",checked:false},
+					        	            	          {id:"pubIp_Stop",name:"终止",checked:false},
+					        	            	          {id:"pubIp_Delete",name:"删除",checked:false}
+					        	            	]
+					        	            },
+					        	            {id:"loadBalan",name:"负载均衡器",checked:false,
+					        	            	children:[
+					        	            	          {id:"lb_Creat",name:"创建负载均衡器",checked:false},
+					        	            	          {id:"lb_VIP_Add",name:"添加VIP",checked:false},
+					        	            	          {id:"lb_VIP_Edit",name:"编辑VIP",checked:false},
+					        	            	          {id:"lb_VIP_Del",name:"删除VIP",checked:false},
+					        	            	          {id:"lb_TimeModify",name:"有效时间变更",checked:false},
+					        	            	          {id:"lb_enable",name:"启用",checked:false},
+					        	            	          {id:"lb_disable",name:"禁用",checked:false},
+					        	            	          {id:"lb_Stop",name:"终止",checked:false},
+					        	            	          {id:"lb_Delete",name:"删除",checked:false}
+					        	            	]
+					        	            },
+					        	            {id:"sshKey",name:"SSH密钥",checked:false,
+					        	            	children:[
+					        	            	          {id:"ssh_key_Create",name:"创建密钥",checked:false},
+					        	            	          {id:"ssh_key_DownLoad",name:"下载",checked:false},
+					        	            	          {id:"ssh_key_CS_Watch",name:"查看挂载云主机",checked:false},
+					        	            	          {id:"ssh_key_TimeModify",name:"有效时间变更",checked:false},
+					        	            	          {id:"ssh_key_Stop",name:"终止",checked:false},
+					        	            	          {id:"ssh_key_Delete",name:"删除",checked:false}
+					        	            	]
+					        	            },
+					        	            {id:"instanStore",name:"对象存储",checked:false,
+					        	            	children:[
+					        	            	          {id:"ins_Store_Create",name:"创建对象存储",checked:false},
+					        	            	          {id:"ins_Store_Upload",name:"上传",checked:false},
+					        	            	          {id:"ins_Store_TimeModify",name:"有效时间变更",checked:false},
+					        	            	          {id:"ins_Store_Stop",name:"终止",checked:false},
+					        	            	          {id:"ins_Store_Delete",name:"删除对象存储",checked:false}
+					        	            	]
+					        	            }					        	            
+					        	            ]
+					          },
+					          { id:"bussiCut",name:"业务割接",checked:false},
+					          { id:"resourceBack",name:"资源回收",checked:false}
+					        ]
+					      },
+					      { id:"orderForm",name:"订单", isParent:true,checked:false},
+					      { id:"vdcManger",name:"VDC管理", open:false,checked:false,
+					          children: [
+					            { id:"vdcModiAppl",name:"VDC变更申请",checked:false}
+					          ]
+					      },
+					      { id:"vpcManger",name:"VPC管理", isParent:true,checked:false},
+					      { id:"busiSystem",name:"业务系统", isParent:true,checked:false},
+					      { id:"appli",name:"应用", open:false,checked:false,
+					          children: [
+					            { id:"softWare",name:"软件",checked:false},
+					            { id:"script",name:"脚本",checked:false},
+					            { id:"softInstall",name:"软件安装",checked:false},
+					            { id:"softUpdate",name:"软件升级",checked:false},
+					            { id:"installLog",name:"安装日志",checked:false}
+					          ]
+					        },		        
+					      { id:"work",name:"工作", open:false,checked:false,
+					          children: [
+					            { id:"newWork",name:"新建工作",checked:false },
+					            { id:"myWork",name:"我的工作" ,checked:false}
+					          ]
+					      },
+					      { id:"billing",name:"计费", open:false,checked:false,
+					          children: [
+					            { id:"bilRule",name:"计费规则",checked:false },
+					            { id:"bilCount",name:"计费清单统计" ,checked:false}
+					          ]
+					      },
+					      { id:"report",name:"报表", open:false,checked:false,
+					          children: [
+					            { id:"systemDesign",name:"报表统计", open:false,checked:false ,
+					            	 children: [
+									            { id:"vdcRepo",name:"VDC报表",checked:false },
+									            { id:"chargeRepo",name:"计费报表" ,checked:false},
+									            { id:"serverRepo",name:"物理主机报表",checked:false },
+									            { id:"cloudServerRepo",name:"云主机报表",checked:false },
+									            { id:"selfDefRepo1",name:"自定义报表列表",isParent:true, open:false,checked:false }
+									 ]
+					            },
+					            { id:"repoDef",name:"自定义报表", open:false ,checked:false}
+					          ]
+					      },
+					      { id:"system",name:"系统", open:false,checked:false,
+					          children: [
+								{ id:"sysUserManage",name:"用户管理",checked:false },
+					            { id:"sysRoleManage",name:"角色管理",checked:false ,
+					            	 children: [
+									            { id:"roleCreat",name:"创建角色",checked:false },
+									            { id:"roleModify",name:"修改角色" ,checked:false},
+									            { id:"roleDel",name:"删除角色",checked:false },
+									            { id:"roleAllo",name:"分配用户",checked:false }
+									 ]
+					            },
+					            { id:"flowManage",name:"流程管理" ,checked:false},
+					            { id:"serverConf",name:"服务器配置" ,checked:false,
+					            	children: [
+									            { id:"repoConf",name:"集算报表平台配置",checked:false },									         
+									            { id:"ftpServerConf",name:"FTP配置",checked:false },
+									            { id:"chefServerConf",name:"Chef配置",checked:false }/* ,
+									            { id:"emailServerConf",name:"邮件服务器配置",checked:false } */
+									 ]
+					            },
+					            { id:"warnConf",name:"告警配置" ,checked:false},
+					            { id:"firstPgConf",name:"首页配置" ,checked:false},
+					            { id:"license",name:"License" ,checked:false},
+					            { id:"wordConf",name:"字典管理" ,checked:false},
+					            { id:"resoProperty",name:"资源属性" ,checked:false},
+					            { id:"warn",name:"告警" ,checked:false,
+					            	children: [
+									            { id:"sysWarn",name:"系统告警",checked:false },									         
+									            { id:"cloudServerWarn",name:"云主机告警",checked:false },
+									            { id:"vdcMountWarn",name:"VDC配额告警",checked:false }
+						
+									 ]
+					            },
+					            { id:"notify",name:"通知" ,checked:false,
+					            	children: [
+									            { id:"sysNotify",name:"系统通知",checked:false }									         
+									            /* { id:"msgNotify",name:"短信通知",checked:false },
+									            { id:"emailNotify",name:"邮件通知",checked:false } */
+						
+									 ]
+					            }
+					          ]
+					      }					      
+						  ];
+			
+			//自助门户操作权限菜单
+			var zNodes2 =[        
+					      { id:"firstPage",name:"首页", isParent:true,checked:false},					      
+					      {id:"myResource", name:"我的资源", open:false,checked:false,
+					        children: [
+		        	            {id:"cloudServer",name:"云主机",checked:false,
+		        	            	children:[
+		        	            	          {id:"cs_PowerOn",name:"开机",checked:false},
+		        	            	          {id:"cs_PowerOff",name:"关机",checked:false},
+		        	            	          {id:"cs_Reboot",name:"重启(强制重启)",checked:false},
+		        	            	          {id:"cs_Console",name:"控制台",checked:false},
+		        	            	          {id:"cs_Resomodify",name:"资源调整",checked:false},
+		        	            	          {id:"cs_TimeMidify",name:"有效时间变更",checked:false},
+		        	            	          {id:"cs_Wait",name:"挂起",checked:false},
+		        	            	          {id:"cs_Recovery",name:"恢复",checked:false},
+		        	            	          {id:"cs_Stop",name:"终止",checked:false},
+		        	            	          {id:"cs_Delete",name:"删除",checked:false},
+		        	            	          {id:"cs_Minitor",name:"监控",checked:false}
+
+		        					]  
+		        	  			},
+		        	            {id:"cloudDisk",name:"云硬盘",checked:false,
+		        	            	children:[
+		        	            	          {id:"cd_Extend",name:"扩展",checked:false},
+		        	            	          {id:"cd_Delete",name:"删除",checked:false}
+		        	            	]
+		        	            },
+		        	            {id:"publicIp",name:"公网IP",checked:false,
+		        	            	children:[
+		        	            	          {id:"pubIp_CS_Bind",name:"绑定云主机",checked:false},
+		        	            	          {id:"pubIp_LB_Bind",name:"绑定负载均衡器",checked:false},
+		        	            	          {id:"pubIp_CS_Unbind",name:"解绑",checked:false},
+		        	            	          {id:"pubIp_TimeModify",name:"有效时间变更",checked:false},
+		        	            	          {id:"pubIp_Stop",name:"终止",checked:false},
+		        	            	          {id:"pubIp_Delete",name:"删除",checked:false}
+		        	            	]
+		        	            },
+		        	            {id:"loadBalan",name:"负载均衡器",checked:false,
+		        	            	children:[
+		        	            	          {id:"lb_VIP_Add",name:"添加VIP",checked:false},
+		        	            	          {id:"lb_VIP_Edit",name:"编辑VIP",checked:false},
+		        	            	          {id:"lb_VIP_Del",name:"删除VIP",checked:false},
+		        	            	          {id:"lb_TimeModify",name:"有效时间变更",checked:false},
+		        	            	          {id:"lb_enable",name:"启用",checked:false},
+		        	            	          {id:"lb_disable",name:"禁用",checked:false},
+		        	            	          {id:"lb_Stop",name:"终止",checked:false},
+		        	            	          {id:"lb_Delete",name:"删除",checked:false}
+		        	            	]
+		        	            },
+		        	            {id:"sshKey",name:"SSH密钥",checked:false,
+		        	            	children:[
+		        	            	          {id:"ssh_key_DownLoad",name:"下载",checked:false},
+		        	            	          {id:"ssh_key_CS_Watch",name:"查看挂载云主机",checked:false},
+		        	            	          {id:"ssh_key_TimeModify",name:"有效时间变更",checked:false},
+		        	            	          {id:"ssh_key_Stop",name:"终止",checked:false},
+		        	            	          {id:"ssh_key_Delete",name:"删除密钥",checked:false}
+		        	            	]
+		        	            },
+		        	            {id:"instanStore",name:"对象存储",checked:false,
+		        	            	children:[
+		        	            	          {id:"ins_Store_Upload",name:"上传",checked:false},
+		        	            	          {id:"ins_Store_TimeModify",name:"有效时间变更",checked:false},
+		        	            	          {id:"ins_Store_Stop",name:"终止",checked:false},
+		        	            	          {id:"ins_Store_Delete",name:"删除对象存储",checked:false}
+		        	            	]
+		        	            },		        	            
+		        	          ]
+					      },
+					      { id:"serviceAppl",name:"服务申请", isParent:true,checked:false},
+					      { id:"shopCart",name:"购物车", isParent:true,checked:false},
+					      { id:"myOrder",name:"我的订单", isParent:true,checked:false},
+					      { id:"busiSystem",name:"业务系统", isParent:true,checked:false},
+					      { id:"appli",name:"应用", open:false,checked:false,
+					          children: [
+					            { id:"softInstall",name:"软件安装",checked:false},
+					            { id:"softUpdate1",name:"软件升级",checked:false},
+					            { id:"installLog",name:"安装日志",checked:false}
+					          ]
+					        },		        
+					      { id:"work",name:"工作", open:false,checked:false,
+					          children: [
+					            { id:"newWork",name:"新建工作",checked:false },
+					            { id:"myWork",name:"我的工作" ,checked:false}
+					          ]
+					      },
+					      { id:"billingCount",name:"计费清单统计", open:false,isParent:true,checked:false},
+					      { id:"cloudServerWarn",name:"云主机告警" ,checked:false,isParent:true},
+				          { id:"notify",name:"通知" ,checked:false,
+				              children: [
+								{ id:"sysNotify",name:"系统通知",checked:false }				         
+					
+							  ]
+				          },
+					      { id:"report",name:"报表", open:false,checked:false,
+					          children: [
+					            { id:"cloudServerRepo",name:"云主机报表",checked:false },
+					            { id:"selfDefRepo",name:"自定义报表列表",isParent:true,checked:false }
+					          ]
+					      },
+						];
+			   
+			    
+			
+			var allNodes = ["firstPage","service","proDef","servManage","resource","dataCenter","diskAcce","resoInstance",
+				               "cloudServer","cloudServerCreate","cs_PowerOn","cs_PowerOff","cs_Reboot","cs_PoweReboot",
+				               "cs_Console","cs_Resomodify","cs_Wait","cs_Recovery","cs_TimeMidify","cs_Stop","cs_Delete",
+				               "cs_CloudDisk","cs_Minitor","cs_TaskSchedul","cloudDisk","cd_DiskCreate","cd_Extend","cd_Delete",
+				               "publicIp","pubIp_Create","pubIp_CS_Bind","pubIp_LB_Bind","pubIp_CS_Unbind","pubIp_TimeModify",
+				               "pubIp_Stop","pubIp_Delete","loadBalan","lb_Creat","lb_VIP_Add","lb_VIP_Edit","lb_TimeModify",
+				               "lb_Stop","lb_Delete","sshKey","ssh_key_Create","ssh_key_DownLoad","ssh_key_CS_Watch",
+				               "ssh_key_TimeModify","ssh_key_Stop","ssh_key_Delete","instanStore","ins_Store_Create",
+				               "ins_Store_Upload","ins_Store_TimeModify","ins_Store_Stop","ins_Store_Delete","ins_Store_Info",
+				               "bussiCut","resourceBack","orderForm","orderFormManager","vdcManger","modify","delete",
+				               "vdcModiAppl","vpcManger","busiSystem","appli","softWare","script","softInstall","softUpdate",
+				               "installLog","work","newWork","myWork","billing","bilRule","bilCount","report","systemDesign",
+				               "vdcRepo","chargeRepo","serverRepo","cloudServerRepo","repoDef","system","sysUserManage",
+				               "sysRoleManage","roleCreat","roleModify","roleDel","roleAllo","roleMenuPriv","flowManage","serverConf",
+				               "repoConf","ftpServerConf","chefServerConf","emailServerConf","warnConf","firstPgConf","license",
+				               "wordConf","resoProperty","warn","sysWarn","vdcMountWarn","cloudServerWarn","notify","sysNotify",
+				               "msgNotify","emailNotify","operaLog","loginLog","lb_enable","lb_disable","lb_VIP_Del"]
+			
+			var allSelfNodes = ["firstPage","myResource","cloudServer","cs_PowerOn","cs_PowerOff","cs_Reboot","cs_PoweReboot",
+			                    "cs_Console","cs_Resomodify","cs_TimeMidify","cs_Wait","cs_Recovery","cs_Stop","cs_Delete",
+			                    "cs_Minitor","cloudDisk","cd_Extend","cd_Delete","publicIp","pubIp_CS_Bind","pubIp_LB_Bind",
+			                    "pubIp_CS_Unbind","pubIp_TimeModify","pubIp_Stop","pubIp_Delete","loadBalan","lb_VIP_Add",
+			                    "lb_VIP_Edit","lb_VIP_Del","lb_TimeModify","lb_Stop","lb_Delete","sshKey","ssh_key_DownLoad",
+			                    "ssh_key_CS_Watch","ssh_key_TimeModify","ssh_key_Stop","ssh_key_Delete","instanStore",
+			                    "ins_Store_Upload","ins_Store_TimeModify","ins_Store_Stop","ins_Store_Delete","serviceAppl",
+			                    "shopCart","myOrder","busiSystem","appli","softInstall","softUpdate1","installLog","work","newWork",
+			                    "myWork","billingCount","warn","cloudServerWarn","notify","sysNotify","report","cloudServerRepo","lb_enable","lb_disable"]
+			
+			//授权菜单保存
+		    this.menuSave = function(treeId, type){
+				if(type=="oper"){//运营门户授权菜单保存
+			    	var treeObj = $.fn.zTree.getZTreeObj(treeId);
+			    	if(name == '系统管理员'||name == 'VDC管理员'||name == '安全管理员'||name == '安全审计员'){
+			    		//先把所有置灰的节点激活
+				    	var nodes = treeObj.transformToArray(treeObj.getNodes());
+				    	for(var m = 0;m<nodes.length;m++){
+				    		treeObj.setChkDisabled(nodes[m],false);
+				    	}
+				    	//获取所有已勾选的节点
+				    	var checkedNodes = treeObj.getCheckedNodes(true);
+				    	//最后把激活的节点再次置灰
+				    	for(var i = 0;i<allNodes.length;i++){
+							var node = treeObj.getNodeByParam("id", allNodes[i], null);
+							if(csc.util.isNotNull(node)){
+								treeObj.setChkDisabled(node,true);
+							}
+						}
+			    	}else{
+			    		//获取所有已勾选的节点
+				    	var checkedNodes = treeObj.getCheckedNodes(true);
+			    	}
+			    	var menuIds=new Array();
+		    		for(var i=0;i<checkedNodes.length;i++){
+		    			menuIds.push(checkedNodes[i].id);
+			    	}
+			    	if(menuIds.length==0){
+			    		menuIds[0]="000";
+			    	}
+			    	var param = JSON.stringify(menuIds);
+			    	var putBody={};
+					putBody.uuid = uuid;
+					putBody.roleName = encodeURIComponent(name);
+					putBody.privMenu = param;
+					csc.rest.put("api/v5.0.0/roles/updataRoleMenus", putBody,function(data){
+						self.isAdd(true);
+						alert("授权成功！");
+			      		});
+				}else{//自助门户授权保存
+					
+			    	var treeObj = $.fn.zTree.getZTreeObj(treeId);
+			    	var nodes = treeObj.transformToArray(treeObj.getNodes());
+			    	if(name == '普通用户'){
+			    		//先把所有置灰的节点激活
+				    	var nodes = treeObj.transformToArray(treeObj.getNodes());
+				    	for(var m = 0;m<nodes.length;m++){
+				    		treeObj.setChkDisabled(nodes[m],false);
+				    	}
+				    	//获取所有已勾选的节点
+				    	var checkedNodes = treeObj.getCheckedNodes(true);
+				    	//最后把激活的节点再次置灰
+				    	for(var i = 0;i<allSelfNodes.length;i++){
+							var node = treeObj.getNodeByParam("id", allSelfNodes[i], null);
+							if(csc.util.isNotNull(node)){
+								treeObj.setChkDisabled(node,true);
+							}
+						}
+			    	}else{
+			    		//获取所有已勾选的节点
+				    	var checkedNodes = treeObj.getCheckedNodes(true);
+			    	}
+			    	var menuIds=new Array();
+			    	for(var i=0;i<checkedNodes.length;i++){
+			    		menuIds.push(checkedNodes[i].id);
+			    	}
+			    	if(menuIds.length == 0){
+			    		menuIds[0]="000";
+			    	}
+			    	var param = JSON.stringify(menuIds);
+			    	var putBody={};
+					putBody.uuid = uuid;
+					putBody.roleName = encodeURIComponent(name);
+					putBody.privMenu = param;
+					csc.rest.put("api/v5.0.0/roles/updataRoleSelfMenus", putBody,function(data){
+						self.isAdd(true);
+						alert("授权成功！");
+			      		});	
+				}
+			};
+			this.loadTrees = function(){
+				$(".ztree").each(function(index, item){
+					var item = $(item);
+					self.loadTree(item.attr("id"), item.attr("type"));
+				})
+			}
+			this.loadTree = function(treeId, type){
+				if(type=="oper"){
+					//判断是否是三元管理，然后初始化相应的运营门户的权限列表
+					csc.rest.get("api/v5.0.0/roles/"+uuid+"/isSanyuan",function(data){
+						if(data.sanYuan === "true"){
+							      $.fn.zTree.init($("#"+treeId), setting, zNodes3);
+							      var treeObj = $.fn.zTree.getZTreeObj(treeId);
+							      //获取自定义报表，如果有，就添加到权限树上
+							      var repoDefNode = treeObj.getNodeByParam("id", "selfDefRepo1", null);
+							      $.REPORT.getCustomReports({}, function(data){
+							    	  if(repoDefNode && data && data.results){
+								    	   for(var i=0; i<data.results.length; i++){
+								    		   var reportData = data.results[i];
+								    		   var newNode = {id: "reportDef_" + reportData.id, name: reportData.name};
+								    		   treeObj.addNodes(repoDefNode, newNode);
+								    	   }
+								      }
+							    	  //选中已授权菜单
+							    	  csc.rest.get("api/v5.0.0/roles/" + uuid + "/initPriMenu", function(data){
+											var str = data.uuid.substring(1,data.uuid.length-1);
+											var privMenus = str.split(",");
+											if(privMenus.length>0&&csc.util.isNotNull(privMenus[0])){
+												for(var i=0;i<privMenus.length;i++){
+													var node=treeObj.getNodeByParam("id", privMenus[i].substring(1,privMenus[i].length-1), null);
+													if(csc.util.isNotNull(node)){
+														treeObj.checkNode(node,true);
+													}
+												}	
+											}
+							    	  if(name == 'VDC管理员'||
+							    		name == '系统管理员'||
+							    		name == '安全管理员'||
+							    		name == '安全审计员'){
+											for(var i = 0;i<allNodes.length;i++){
+												if(name == '安全管理员'||
+											       name == '安全审计员'){
+													var node = treeObj.getNodeByParam("id", "selfDefRepo1", null);
+													if(csc.util.isNotNull(node)){
+														treeObj.setChkDisabled(node,true,false,true);
+													}
+													if(name == '安全审计员'){
+											    		   var node = treeObj.getNodeByParam("id", "system", null);
+											    		   treeObj.checkNode(node,false);
+											    		   treeObj.setChkDisabled(node,true,false,true);
+											    	   }
+												}
+												var node = treeObj.getNodeByParam("id", allNodes[i], null);
+												if(csc.util.isNotNull(node)){
+													treeObj.setChkDisabled(node,true);
+												}
+											}
+										}
+							    	  if(name == '运营管理员'||
+									    	name == '运维管理员'){
+											for(var i = 0;i<allNodes.length;i++){
+												var node = treeObj.getNodeByParam("id", "vdcModiAppl", null);
+												if(csc.util.isNotNull(node)){
+													treeObj.setChkDisabled(node,true,false,true);
+												}
+											}
+									 }
+								       });
+							      });			      
+							      
+						}else{
+							      $.fn.zTree.init($("#"+treeId), setting, zNodes);
+							      var treeObj = $.fn.zTree.getZTreeObj(treeId);
+							      //获取自定义报表，如果有，就添加到权限树上
+							      var repoDefNode = treeObj.getNodeByParam("id", "selfDefRepo1", null);
+							      $.REPORT.getCustomReports({}, function(data){
+							    	  if(repoDefNode && data && data.results){
+								    	   for(var i=0; i<data.results.length; i++){
+								    		   var reportData = data.results[i];
+								    		   var newNode = {id: "reportDef_" + reportData.id, name: reportData.name};
+								    		   treeObj.addNodes(repoDefNode, newNode);
+								    	   }
+								      }
+							    	  //选中已授权菜单
+							    	  csc.rest.get("api/v5.0.0/roles/" + uuid + "/initPriMenu", function(data){
+											var str = data.uuid.substring(1,data.uuid.length-1);
+											var privMenus = str.split(",");
+											if(privMenus.length>0&&csc.util.isNotNull(privMenus[0])){
+												for(var i=0;i<privMenus.length;i++){
+													var node=treeObj.getNodeByParam("id", privMenus[i].substring(1,privMenus[i].length-1), null);
+													if(csc.util.isNotNull(node)){
+														treeObj.checkNode(node,true);
+													}
+												}	
+											}
+								    	   if(name == 'VDC管理员'||name == '系统管理员'){
+												for(var i = 0;i<allNodes.length;i++){
+													var node = treeObj.getNodeByParam("id", allNodes[i], null);
+													if(csc.util.isNotNull(node)){
+														treeObj.setChkDisabled(node,true);
+													}
+												}
+											}
+								    	   if(name == '运营管理员'||
+											    	name == '运维管理员'){
+													for(var i = 0;i<allNodes.length;i++){
+														var node = treeObj.getNodeByParam("id", "vdcModiAppl", null);
+														if(csc.util.isNotNull(node)){
+															treeObj.setChkDisabled(node,true,false,true);
+														}
+													}
+											 }
+								       });
+							      });							      
+						}
+					}); 
+				}else{
+						
+					$.fn.zTree.init($("#"+treeId), setting, zNodes2);
+				    var treeObj = $.fn.zTree.getZTreeObj(treeId);
+				  	//获取自定义报表，如果有，就添加到权限树上
+				    var repoDefNode = treeObj.getNodeByParam("id", "selfDefRepo", null);
+				    $.REPORT.getCustomReports({}, function(data){
+				  	  if(repoDefNode && data && data.results){
+				   	   for(var i=0; i<data.results.length; i++){
+				   		   var reportData = data.results[i];
+				   		   var newNode = {id: "reportDef_" + reportData.id, name: reportData.name};
+				   		   treeObj.addNodes(repoDefNode, newNode);
+				   	   }
+				     }
+				  	  //选中已授权菜单
+				  	  csc.rest.get("api/v5.0.0/roles/" + uuid + "/initSelfPriMenu", function(data){
+						var str = data.uuid.substring(1,data.uuid.length-1);
+						var privMenus = str.split(",");
+						if(privMenus.length>0&&csc.util.isNotNull(privMenus[0])){
+							for(var i=0;i<privMenus.length;i++){
+								var node=treeObj.getNodeByParam("id", privMenus[i].substring(1,privMenus[i].length-1), null);
+								if(csc.util.isNotNull(node)){
+									treeObj.checkNode(node,true);
+								}
+							}	
+						}
+						
+				  	if(name == '普通用户'){
+							for(var i = 0;i<allSelfNodes.length;i++){
+								var node = treeObj.getNodeByParam("id", allSelfNodes[i], null);
+								if(csc.util.isNotNull(node)){
+									treeObj.setChkDisabled(node,true);
+								}
+							}
+						}
+				     });
+				    });
+				}
+			}
+
+	}
+	var viewModel = new RoleViewModel();
+	ko.applyBindings(viewModel, $('#page-content')[0]);
+	viewModel.loadTrees();	      
+	      
+  });
+</script>

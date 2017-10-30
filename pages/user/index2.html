@@ -1,0 +1,390 @@
+<div class="bg-light lter b-b wrapper-sm">
+	<ol class="breadcrumb">
+		<li>当前位置：</li>
+		<li class="active">用户</li>
+	</ol>
+</div>
+<div class='wrapper-md'>
+	<div class="panel panel-default b-blue">
+		<div class="row wrapper">
+			<div class="col-xs-8">
+				<a data-bind="click: showAddPage" href="#pages/project/new"
+					class="btn btn-sm btn-info">创建用户</a>
+				<!-- 
+				<a href="#" class="btn btn-sm btn-info"
+					data-bind="click: showAddPage, check_action:'roleCreat'"> 创建用户</a> -->
+			</div>
+			<div class="col-xs-3">
+				<div class="input-group">
+					<span class="input-group-addon">用户名称</span> <input type="text"
+						placeholder="请输入名称" class="form-control input-sm"
+						data-bind="enterKey: search, textInput: searchParam().name">
+				</div>
+			</div>
+			<div class="col-xs-1">
+				<a class="btn btn-default btn-sm" data-bind="click: search">搜索</a>
+			</div>
+		</div>
+		<div class="table-responsive" data-bind="with: roleTable">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>用户名称</th>
+						<th>角色</th>
+						<th>创建时间</th>
+						<th>修改时间</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- <tr data-bind="visible: showNoData">
+            <td colspan="4" class="aligncenter">
+             	 暂无数据
+            </td>
+          </tr> -->
+					<!-- ko foreach: {data: results, as: '$row'}  -->
+					<tr>
+						<td data-bind=" attr:{'title': $row.username}"><a
+							data-bind="text: $row.username,attr:{href:'#pages/user/show?id=' + $row.username}"></a>
+						</td>
+
+						<td><span class="label label-warning"
+							data-bind="if:$row.role == 'operator'">操作员</span> <span
+							class="label label-success"
+							data-bind="if:$row.role == 'readonly'">只读</span> <span
+							class="label label-danger" data-bind="if:$row.role == 'admin'">管理员</span>
+						</td>
+
+						<!--<td data-bind="text: $row.role"></td>  -->
+
+						<td
+							data-bind="text:  moment($row.createTime).format('YYYY-MM-DD HH:mm:ss')"></td>
+						<!-- data.createtime <td data-bind="text: $row.latestModifyTime"></td> -->
+						<td
+							data-bind=" text: moment($row.latestModifyTime).format('YYYY-MM-DD HH:mm:ss')"></td>
+						<td><span><a data-bind="click: $root.showEditPage">修改</a>
+								| </span> <span><a data-bind="click: $root.remove">删除</a></span></td>
+
+					</tr>
+					<!-- /ko -->
+				</tbody>
+			</table>
+		</div>
+		<!-- 
+		  <footer class="panel-footer" data-bind="with: roleTable, visible: roleTable.pages() > 1">
+      <ul class="pagination">
+        <li data-bind="css: leftPagerClass, click: gotoPage(1)">
+          <a href="#">首页</a>
+        </li>
+        <li data-bind="css: leftPagerClass, click: prevPage">
+          <a href="#">&laquo;</a>
+        </li>
+        <li >
+          <a href="#"  data-bind="text: currentPage"></a>
+        </li>
+        <li data-bind="css: rightPagerClass, click: nextPage">
+          <a href="#">&raquo;</a>
+        </li>
+        <li data-bind="css: rightPagerClass, click: gotoPage(pages())">
+          <a href="#">末页</a>
+        </li>
+        <li class="page-control-li">
+          <div class="input-group form-group-sm">
+            <input type="text" class="form-control" data-bind="value: targetPage"  />
+            <div class="input-group-btn">
+              <a href="#" class="btn btn-sm btn-default" data-bind="click: gotoTargetPage()">跳转</a>
+            </div>
+          </div>
+          <div class="page-info-div" data-bind="text: recordsText"></div>
+        </li>
+      </ul>
+    </footer>    -->
+	</div>
+</div>
+
+<!-- 新增修改页面 -->
+<div role="dialog" aria-hidden="true" class="modal fade"
+	data-bind="modal: { show: isAdd }">
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-header'>
+				<a class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></a>
+				<h3 class='modal-title' data-bind="ifnot: currentVO().uuid">创建用户</h3>
+				<h3 class='modal-title' data-bind="if: currentVO().uuid">修改用户</h3>
+			</div>
+			<div class='modal-body form-horizontal row'>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">用户名称</label>
+					<div class="col-xs-8">
+						<input type="text" class="form-control" maxlength="32"
+							data-bind="value: currentVO().username">
+					</div>
+					<div class="col-xs-1">
+						<span class="text-danger inline m-l-n m-t-sm">*</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 control-label">密码</label>
+					<div class="col-xs-8">
+						<input type="password" class="form-control" maxlength="32"
+							data-bind="value: currentVO().password">
+					</div>
+				</div>
+				<!-- 
+				<div class="form-group">
+					<label class="col-xs-3 control-label">角色</label>
+					<div class="col-xs-8">
+						<input type="text" class="form-control" maxlength="32"
+							data-bind="value: currentVO().role">
+					</div>
+				</div>
+				 -->
+				<div class="form-group">
+					<label class="col-xs-3 control-label">角色</label>
+					<div class="col-xs-8">
+						<select class="form-control" data-bind="value: currentVO().role">
+							<option value="admin">管理员</option>
+							<option value="operator">操作员</option>
+							<option value="readonly">只读</option>
+
+						</select>
+					</div>
+
+				</div>
+			</div>
+			<div class='modal-footer' style="text-align: center;">
+				<button type="button" class="btn btn-info"
+					data-bind="click: okBtnFun">确定</button>
+				<a class="btn btn-default" data-dismiss="modal">取消</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	//"api/systems/role/role.js",
+	//,"assets/js/temp/userData.js
+	var scripts = [ null ]
+	$('.page-content-area').ace_ajax(
+			'loadScripts',
+			scripts,
+
+			function(args) {
+
+				//var ;
+				//var tempData=userData;
+				//alert("getData")
+				var userData;
+				//function refresh
+				csc.rest.getSync('webapi/user', function(data) {
+					userData = data;
+					//tempData=userData;
+					//alert("getData"+userData.total)
+
+				});
+				//alert("getData"+userData.total)
+
+				function viewModel() {
+					var self = this;
+					this.isAdd = ko.observable(false);
+
+					this.currentVO = ko.validatedObservable({
+						"uuid" : ko.observable("").extend({
+							maxLength : 5
+						}),
+						"username" : ko.observable("").extend({
+							required : true,
+							cscNameRule : true,
+							maxLength : 32
+						}),
+						"password" : ko.observable("").extend({
+							maxLength : 30
+						}),
+						"role" : ko.observable("").extend({
+							maxLength : 30
+						})
+					});
+					//};
+
+					this.oldVO = ko.observable({});
+
+					//显示添加页面
+					this.showAddPage = function() {
+						self.currentVO.fromJSON({
+							uuid : "",
+							username : "",
+							password : "",
+							role : ""
+						});
+
+						self.isAdd(true);
+						//alert("show add"+self.currentVO().uuid())
+
+					}
+
+					//创建
+					this.createUser = function(currentVO) {
+						params = {
+							uuid : currentVO.uuid(),
+							username : currentVO.username(),
+							password : currentVO.password(),
+							role : currentVO.role()
+						};
+						ko.validation.group(self.currentVO).showAllMessages();
+						if (self.currentVO.isValid()) {
+							//csc.rest.put("")
+
+							//	post : function(url, content, successFun, errorFun,notShowError,callbackCustParam,notShowLoading) {
+
+							//$.user.create(params, function(data) {
+							//alert("webapi/user/" + currentVO.username());
+							csc.rest.post(
+									"webapi/user/" + currentVO.username(),
+									params, function(data) {
+										//callback(data);
+										if (data.exception) {
+											alert("创建用户失败！" + data.exception);
+										} else {
+											self.isAdd(false);
+											alert("创建用户成功！");
+										}
+
+									}, function(data) {
+										//errorCallback(data);
+										alert("创建用户失败！" + data.execption);
+									});
+							/*
+							function(data,textStatus,callbackCustParam) {
+										self.isAdd(false);
+										//this.roleTable.refreshData();
+										alert("test--"+textStatus)
+										alert ("dat==a"+data)
+										alert("back"+callbackCustParam)
+										
+										alert("创建用户成功！");
+									}
+								); */
+						}
+					}
+
+					//显示编辑页面
+					this.showEditPage = function(object, event) {
+						//alert("showEdit")
+						self.oldVO({
+							uuid : object.uuid,
+							username : object.username,
+							password : object.password,
+							role : object.role
+
+						});
+
+						var uuidObj = ({
+							uuid : object.username,
+							username : object.username,
+							password : object.password,
+							role : object.role
+
+						});
+
+						self.currentVO.fromJSON(uuidObj);
+
+						self.isAdd(true);
+
+						//alert("showEdit"+uuidObj.uuid());
+
+					}
+					//判断是否已修改
+					this.isChanged = function(o1, o2) {
+						if (o1.name == o2.name().trim()
+								&& o1.desc == o2.desc().trim()) {
+							return false;
+						} else {
+							return true;
+						}
+					}
+					//修改信息
+					this.editUser = function(currentVO) {
+						params = {
+							username : currentVO.username().trim(),
+							password : currentVO.password().trim(),
+							role : currentVO.role().trim(),
+
+						};
+
+						csc.rest.put("webapi/user/" + currentVO.username(),
+								params, function(data) {
+									//callback(data);
+									if (data.exception) {
+										alert("修改用户失败！" + data.exception);
+									} else {
+										self.isAdd(false);
+										alert("修改用户成功！");
+									}
+
+								}, function(data) {
+									//errorCallback(data);
+									alert("修改用户失败！" + data.execption);
+								});
+
+					}
+
+					//确定按钮
+					this.okBtnFun = function(object) {
+						//如果id为空，则新增
+						//alert(this.isAdd)
+						if (object.uuid == "") {
+
+							self.createUser(self.currentVO());
+							//修改
+						} else {
+							self.editUser(self.currentVO());
+						}
+
+					}
+					//删除角色
+					this.remove = function(roleObj) {
+						var name = roleObj.username;
+						confirm("确定删除用户[" + name + "]？", function(arg) {
+							$.roletable.del({
+								id : roleObj.username
+							}, function(data) {
+								self.roleTable.refreshData();
+								alert("删除用户[" + name + "]成功！")
+							});
+						});
+					}
+
+					this.searchParam = ko.observable({
+						name : ""
+					})
+					this.search = function() {
+						self.roleTable.params(self.searchParam());
+					}
+
+					this.roleTable = new DataTable({
+						perPage : 10,
+						path : './webapi/projectgroup',
+						loader : function(result) {
+							result.name_ = csc.util.trimName(result.name, 16);
+							result.description_ = csc.util.trimName(
+									result.description, 21);
+							return result;
+						}
+					});
+// 					this.roleTable = new DataTable({
+// 						perPage : 10,
+// 						path : './webapi/user',
+// 						loader : function(result) {
+// 							//result.name_ = csc.util.trimName(result.name, 16);
+// 							//result.desc_ = csc.util.trimName(result.desc, 21);
+// 							return result;
+// 						}
+// 					});
+// 					alert(this.roleTable)
+// 					this.roleTable = userData;
+				}
+
+				ko.applyBindings(new viewModel(), $('#page-content')[0]);
+
+			});
+</script>

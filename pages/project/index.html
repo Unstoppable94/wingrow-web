@@ -1,0 +1,159 @@
+<div class="bg-light lter b-b wrapper-sm">
+	<ol class="breadcrumb">
+		<li>当前位置：</li>
+		<li class="active">项目</li>
+	</ol>
+</div>
+<div class='wrapper-md'>
+	<div class="panel panel-default b-blue">
+		<div class="row wrapper">
+			<div class="col-xs-6">
+				<a data-url="pages/project/new" href="#pages/project/new"
+					class="btn btn-sm btn-success">创建项目</a>
+			</div>
+			<div class="form-inline col-xs-2">
+				<div class="form-group">
+	                <label class="control-label">项目类型</label><select class="form-control input-sm" data-bind="options:$root.projectTypeList,optionsText:'name',optionsValue:'id',value:searchParam().projectType" style="width: 66%;margin-left: 3%;"></select>
+	            </div>
+			</div>
+			<div class="form-inline col-xs-2">
+				<div class="form-group">
+	                <label class="control-label">项目名称</label><input type="text"
+						placeholder="请输入名称" class="form-control input-sm"
+						data-bind="enterKey: search, textInput: searchParam().projectName" style="width: 66%;margin-left: 3%;">
+	            </div>
+			</div>
+			<div class="col-xs-2">
+				<a class="btn btn-default btn-sm" data-bind="click: search">搜索</a>
+				<a class="btn btn-default btn-sm" data-bind="click: reset">重置</a>
+			</div>
+		</div>
+		<div class="table-responsive" data-bind="with: roleTable">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>项目名称</th>
+						<th>项目类型</th>
+						<th>所属项目组</th>
+						<th>创建时间</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- <tr data-bind="visible: showNoData">
+            <td colspan="4" class="aligncenter">
+             	 暂无数据
+            </td>
+          </tr> -->
+					<!-- ko foreach: {data: pagedRows, as: '$row'}  -->
+					<tr>
+						<td><a
+							data-bind="text: $row.name, attr:{'title': $row.name,href:'#pages/project/show?name=' + $row.Id}"></a>
+						</td>
+						<td data-bind="text: $row.projectType"></td>
+						<td data-bind="text: $row.groupName"></td>
+						<td
+							data-bind="text: moment($row.createTime).format('YYYY-MM-DD HH:mm:ss')"></td>
+						<td><span><a
+								data-bind="attr:{href:'#pages/project/edit?name=' + $row.Id}">修改</a>
+								| </span> <span><a data-bind="click: $root.remove">删除</a></span></td>
+					</tr>
+					<!-- /ko -->
+				</tbody>
+			</table>
+		</div>
+		<footer class="panel-footer"
+			data-bind="with: roleTable, visible: roleTable.pages() > 1">
+			<ul class="pagination">
+				<li data-bind="css: leftPagerClass, click: gotoPage(1)"><a
+					href="#">首页</a></li>
+				<li data-bind="css: leftPagerClass, click: prevPage"><a
+					href="#">&laquo;</a></li>
+				<li><a href="#" data-bind="text: currentPage"></a></li>
+				<li data-bind="css: rightPagerClass, click: nextPage"><a
+					href="#">&raquo;</a></li>
+				<li data-bind="css: rightPagerClass, click: gotoPage(pages())">
+					<a href="#">末页</a>
+				</li>
+				<li class="page-control-li">
+					<div class="input-group form-group-sm">
+						<input type="text" class="form-control"
+							data-bind="value: targetPage" />
+						<div class="input-group-btn">
+							<a href="#" class="btn btn-sm btn-default"
+								data-bind="click: gotoTargetPage()">跳转</a>
+						</div>
+					</div>
+					<div class="page-info-div" data-bind="text: recordsText"></div>
+				</li>
+			</ul>
+		</footer>
+	</div>
+</div>
+
+
+
+<script type="text/javascript">
+	var scripts = [ null, "api/systems/role/role.js",
+			"assets/js/temp/tempData.js", "api/project/project.js",'api/MISC/MISC.js']
+	$('.page-content-area').ace_ajax('loadScripts', scripts, function(args) {
+		function RoleViewModel() {
+			var self = this;
+	
+			projectType = ko.observable("");
+			this.projectTypeList = ko.observableArray();
+			$.MISC.projectType.query(null,function(data){
+				data.unshift({"name":"全部","id":""});
+	            self.projectTypeList(data);  
+	        });
+
+
+			//删除角色
+			this.remove = function(roleObj) {
+				var name = roleObj.name;
+				confirm("确定删除[" + name + "]？", function(arg) {
+					$.project.del({
+						id : roleObj.Id
+					}, function(data) {
+						self.roleTable.refreshData();
+						alert("删除[" + name + "]成功！")
+					});
+				}, function(data) {
+					alert("删除[" + name + "]失败！")
+				});
+			}
+
+			this.searchParam = ko.observable({
+				projectName : "",
+				projectType: ""
+			})
+			this.search = function() {
+				self.roleTable.params(self.searchParam());
+			}
+
+			// this.roleTable = projectTempData;
+			this.roleTable = new DataTable({
+				perPage : 10,
+				path : './webapi/project',
+				loader : function(result) {
+					console.log(result)
+					result.name_ = csc.util.trimName(result.name, 16);
+					result.desc_ = csc.util.trimName(result.desc, 21);
+					return result;
+				}
+			});
+
+			this.reset = function(){
+				self.searchParam({
+					projectName : "",
+					projectType: ""
+				});
+				self.roleTable.params(self.searchParam());
+			}
+
+		}
+
+		ko.applyBindings(new RoleViewModel(), $('#page-content')[0]);
+
+	});
+</script>

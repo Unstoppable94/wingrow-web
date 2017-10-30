@@ -1,0 +1,79 @@
+<div class="bg-light lter b-b wrapper-sm">
+	<ol class="breadcrumb">
+		<li>当前位置：</li>
+		<li class="active">用户</li>
+	</ol>
+</div>
+
+<div class='wrapper-md'>
+	<div class="panel panel-default b-blue">
+		<div class='wrapper-md'>
+			<a class="btn btn-sm btn-info" href="#pages/user/index"><i
+				class="fa fa-arrow-left"></i> 返回</a>
+			<div>
+				<h5>
+					<i class="fa fa-minus fa-rotate-90 text-info"></i>基本信息
+				</h5>
+
+				<div style="padding: 10px; background-color: #F7F9F9">
+					<div class="row">
+						<div class="col-md-4">
+							用户：<span data-bind="text:username"></span>
+						</div>
+						<div class="col-md-4">
+							密码：<span data-bind="text:password"></span>
+						</div>
+					</div>
+					<p></p>
+					<div>
+						角色：<span data-bind="text:role"></span>
+					</div>
+				</div>
+				<div style="padding: 10px; background-color: #F7F9F9">
+					<div class="row">
+						<div class="col-md-4">
+							创建时间：<span data-bind="text:createtime"></span>
+						</div>
+					</div>
+					<p></p>
+					<div>
+						修改时间：<span data-bind="text:latestModifyTime"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	var scripts = [ null ]
+	$('.page-content-area').ace_ajax('loadScripts', scripts, function(args) {
+		var topNum = 80;
+		var tempData = {
+			"username" : "test",
+			"password" : "test",
+			"role" : "admin",
+			"createtime" : 1491448239957,
+			"lastModifyTime" : 1491448239957
+		}
+
+		function viewModel() {
+			var self = this;
+			// $.projectGroup.get({id:null},function(data){
+			//   initData(data)
+			// })
+			initData(tempData)
+		    function initData(data){
+ 		      self.username = data.username;
+		      self.password = data.password;
+		      self.createtime = moment(data.createtime).format("YYYY-MM-DD HH:mm:ss");
+		      self.latestModifyTime = moment(data.lastModifyTime).format("YYYY-MM-DD HH:mm:ss");
+		      
+		      self.role = data.role;
+		    }
+      
+		}
+	//alert($('#page-content')[0])
+		ko.applyBindings(new viewModel(), $('#page-content')[0]);
+
+	})
+</script>

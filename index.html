@@ -1,0 +1,463 @@
+﻿<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<meta charset='utf-8'>
+	<title>WinGrow</title>
+	<link rel="icon" href="csc/favicon.ico" type="image/x-icon" />
+	<meta content='width=device-width, initial-scale=1, maximum-scale=1'
+	name='viewport'>
+	<link href='assets/css/bootstrap.min.css' rel='stylesheet'
+	type='text/css'>
+	<link href='assets/css/animate.min.css' rel='stylesheet' type='text/css'>
+	<link href='assets/css/font-awesome.min.css' rel='stylesheet'
+	type='text/css'>
+	<link href='assets/css/simple-line-icons.css' rel='stylesheet'
+	type='text/css'>
+	<link href="assets/lib/bootstrap-daterangepicker/daterangepicker.css"
+	rel="stylesheet">
+	<link href='assets/css/font.css' rel='stylesheet' type='text/css'>
+	<link href='assets/css/angulr.css' rel='stylesheet' type='text/css'>
+	<link href='assets/css/knockout-datatable.css' rel='stylesheet'
+	type='text/css'>
+	<link rel="stylesheet" media="all" href="assets/css/app.css" />
+<!--[if IE 9]>
+    <link href="assets/css/ie9.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+
+    <!-- 解决接口跨域的问题 -->
+    <!--<script src="api/v5.0.0/uap/register"></script> -->
+    <!-- 解决调用servlet跨域问题 -->
+    <!--<script src="api/file/uploadServlet"></script> -->
+    <!-- <script src="api/userStrategyServlet"></script>  -->
+    <!-- <script src="api/logoutServlet"></script>  -->
+    <!--<script src="api/license/licServlet"></script> -->
+</head>
+
+<style>
+	.navbar-brand.text-lt .logo_title{
+		position:absolute;
+		left:60px;
+		font-size:20px;
+		color:#fff;
+	}
+	.bg-dark .nav > li.highlight > a, .bg-dark.navbar .nav > li.highlight > a:hover, .bg-dark.navbar .nav > li.highlight > a:focus{
+		background-color: #4ba268!important;
+	}
+	a:hover, a:focus{
+		color:#4ba268;
+	}
+	.padder{
+		float:left;
+		margin: 12px 0 4px 0;
+	}
+	.loginOut{
+		padding:0 0 0 20px;
+	}
+	.btn-primary,.btn-danger{
+		color:#2a2a2a!important;
+		background-color:transparent;
+		border-color:transparent;
+	}
+	.btn-primary{
+		margin-left:-3px;
+	}
+	.btn-danger{
+		margin-left:37px;
+	}
+	.table{
+		margin:-5px 0 0 0;
+		color:#2a2a2a;
+		font-size:14px;
+	}
+	.table tbody tr{
+		height:42px;
+	}
+	.w-lg{
+		width:244px;
+		margin-right:20px;
+	}
+	.dropdown-menu .divider{
+		margin:-2px 0;
+	}
+	
+	.aside-wrap{
+		padding-top:15px;
+		background-color: #1d1e1d!important;
+	}
+	.navbar-header{
+		background-color:#4ba268!important;
+		border-right:1px solid #fff;
+	}
+	.collapse.pos-rlt.navbar-collapse.box-shadow{
+		background-color:#4ba268;
+	}
+	.btn.no-shadow.navbar-btn{
+		color:#fff;
+	}
+	.dropdown-toggle.clear{
+		color:#fff;
+	}
+	.change{
+		color:#fff;
+	}
+	.nav>li>a:focus, .nav>li>a:hover{
+		background-color:#ccc;
+	}
+	.nav .open > a, .nav .open > a:hover, .nav .open > a:focus{
+		background-color:#ccc;
+	}
+	.text-base{
+		font-size:16px;
+		font-weight:normal;
+	}
+	.bg-dark.dk, .bg-dark .dk{
+		background-color:#121212;
+	}
+	
+	.navi ul.nav li a > i.index{
+		background-image: url(assets/img/nav-index.png);
+	}
+	.navi ul.nav li a > i.group{
+		background-image: url(assets/img/nav-group.png);
+	}
+	.navi ul.nav li a > i.project{
+		background-image: url(assets/img/nav-project.png);
+	}
+	.navi ul.nav li a > i.storehouse{
+		background-image: url(assets/img/nav-storehouse.png);
+	}
+	.navi ul.nav li a > i.icon_system{
+		background-image: url(assets/img/nav-system.png)!important;
+	}
+	.navi ul.nav li a > i.system{
+		background-position:13px 12px;
+	}
+	.navi ul.nav li a > i.home{
+		background-position:13px 13px;
+	}
+	.navi ul.nav li a{
+		padding:15px 20px;
+	}
+	.bg-dark{
+		background-color:#1d1e1d;
+	}
+	.app-aside-fixed .navbar-brand img{
+		height:32px!important;
+		margin-left:-135px;
+	}
+	.app-aside-folded .navi > ul > li > a{
+		height:52px;
+	}
+	.app-aside-folded .navi > ul > li > a i{
+		margin:6px 10px!important;
+	}
+	.bg-dark .text-lt{
+		width:199px;
+	}
+	.bg-dark .nav .open > a{
+		background-color:#1d1e1d;
+	}
+
+	/* 自适应 */
+	
+	/* .app-content{
+		width:auto;
+	} */
+	@media (width:1024px){
+		body{
+			overflow:hidden;
+		}
+		.app-content-body{
+			width:824px;
+		}
+	}
+	@media (max-width:1023px){
+		body{
+			overflow:scroll;
+		}
+	}
+</style>
+
+<body>
+	<div class='app app-header-fixed app-aside-fixed'>
+		<header class='app-header navbar' id='header' role='menu'>
+			<div class='navbar-header bg-dark'>
+				<a class='btn btn-default pull-right visible-xs dk'
+				target='.navbar-collapse' ui-toggle='show'> <i
+				class='glyphicon glyphicon-cog'></i>
+			</a> <a class='btn btn-default pull-right visible-xs'
+			target='.app-aside' ui-scroll='app' ui-toggle='off-screen'> <i
+			class='glyphicon glyphicon-align-justify'></i>
+		</a> <a class='navbar-brand text-lt' href="#pages/welcome/index"> <span><img
+		alt='.' src='assets/img/logo_index.png'
+		style="height: 25px; margin-top: -7px"><span class="logo_title">WinGrow</span></span> <!-- <span class='hidden-folded m-l-xs' style="margin-left:20px;">WinGrow</span> -->
+	</a>
+</div>
+<div
+class='collapse pos-rlt navbar-collapse box-shadow bg-white-only'>
+<div class='nav navbar-nav hidden-xs'>
+	<a class='btn no-shadow navbar-btn' href='#' target='.app'
+	ui-toggle='app-aside-folded'> <i
+	class='fa fa-dedent fa-fw text'></i> <i
+	class='fa fa-indent fa-fw text-active'></i>
+</a>
+</div>
+<!-- data-bind="if: licenseVO().soft_version =='diamond'" -->
+
+<ul class='nav navbar-nav navbar-right'>
+	<li><a class="change"> <i class='fa fa-desktop'></i> CI/CD平台 <span
+		class=' up bg-info'></span></a></li>
+		<li class='dropdown'><a class='dropdown-toggle clear'
+			data-toggle='dropdown'> <i class='fa fa-user'></i> <span
+			class='hidden-sm hidden-md'></span> <b class='caret'></b>
+		</a>
+		<ul class='dropdown-menu animated fadeInRight w-lg bg-light'>
+			<li>
+				<table class="table text-xs">
+					<tbody data-bind="with:loginUserVO">
+						<tr>
+							<td>账号</td>
+							<td data-bind="text:username,attr:{title:role}" style="text-align:right"></td>
+											<!--  <td><input type="text"  
+											data-bind="value:username" /></td>-->
+
+
+										</tr>
+
+										<tr>
+											<td>角色</td>
+											<!-- <td
+											data-bind="text:role,attr:{title:$root.roleVO().currentRole()}"></td> -->
+											<td data-bind="text:role,attr:{title:role}" style="text-align:right"></td>
+										</tr>
+
+									</tbody>
+								</table>
+							</li>
+							<li class='divider'></li>
+							<li>
+								<div class="padder">
+									<a href="#" onclick="showModal('pages/user/edit_password.html')" class="btn btn-primary btn-xs"><i class='fa fa-pencil'></i> 修改密码</a>
+								</div>
+								<div class="padder loginOut">
+									<a href="javascript:logout();" class="btn btn-danger btn-xs"><i
+										class='fa fa-power-off'></i> 退出系统</a>
+										<!-- <a href="login.html" class="btn btn-danger btn-xs"><i
+										class='fa fa-power-off'></i> 退出系统</a> -->
+									</div>
+								</li>
+							</ul></li>
+						</ul>
+					</div>
+				</header>
+
+				<aside class='app-aside hidden-xs bg-dark' id='aside'>
+					<div class='aside-wrap'>
+						<div class='navi-wrap'>
+							<nav class='navi clearfix' ui-nav=''>
+								<ul class='nav navbox'>
+									<li><a data-url="pages/welcome/index"
+										href="#pages/welcome/index"> <i class="icon home index"></i> <span
+										class='text-base'>首页</span></a></li>
+										<li><a data-url="pages/projectGroup/index"
+											href="#pages/projectGroup/index"> <i class="icon home group"></i>
+											<span class='text-base'>项目组</span></a></li>
+											<li><a data-url="pages/project/index"
+												data-url-sec="pages/project/new"
+												data-url-thr="pages/project/edit" href="#pages/project/index">
+												<i class="icon home project"></i> <span class='text-base'>项目</span>
+											</a></li>
+											<li data-bind="if: loginUserVO().role =='admin'"><a data-url="pages/user/index"
+												href="#pages/user/index">
+												<i class="icon service system icon_system"></i> <span class='text-base'>用户管理</span>
+											</a></li>
+											<!-- <li data-bind="if: loginUserVO().role =='admin'"><a data-url="pages/user/edit_password"
+												href="#pages/user/edit_password">
+												<i class="icon service system icon_system"></i> <span class='text-base'>修改密码</span>
+											</a></li> -->
+
+											<li style="display:none"><a class='auto'> <span class='pull-right text-muted'>
+												<i class='fa fa-fw fa-angle-right text'></i> <i
+												class='fa fa-fw fa-angle-down text-active'></i>
+											</span> <i class="icon service system icon_system"></i> <span class='text-base'>系统</span></a>
+											<ul class='nav nav-sub dk'>
+												<li class='nav-sub-header'><a> <span class='text-base'>系统</span></a>
+												</li>
+
+												<li><a data-url="pages/systems/roles/index"
+													href="#pages/user/index"> <span class='text-base'>用户管理</span>
+												</a></li>
+												<li><a data-url="pages/configManger/index"
+													href="#pages/configManger/index"> <span class='text-base'>配置管理</span>
+												</a></li>
+												<li><a data-url="pages/registry/index"
+													href="#pages/registry/index"> <i class="icon home storehouse"></i> <span
+													class='text-base'>仓库</span></a></li>
+
+												</ul></li>
+											</ul>
+
+										</nav>
+									</div>
+								</div>
+
+							</aside>
+
+							<div class='app-content' id='content' role='main'>
+								<div class='app-content-body page-content-area'
+								data-ajax-content="true"></div>
+							</div>
+							<footer class='app-footer' id='footer' role='footer'>
+								<div class='wrapper b-t bg-light'>
+									<span class='pull-right'>5.0.0 <a class='m-l-sm text-muted'
+										href='#' ui-scroll='app'> <i class='fa fa-long-arrow-up'></i></a>
+									</span>&copy; 版权所有 2017 航天云宏技术有限公司
+								</div>
+							</footer>
+						</div>
+
+
+
+						<div class="modal fade modal-draggable" id="ajax_modal_0" tabindex="-1"
+						role="dialog"></div>
+						<div class="modal fade modal-draggable" id="ajax_modal_1" tabindex="-1"
+						role="dialog"></div>
+						<div class="modal fade modal-draggable" id="ajax_modal_2" tabindex="-1"
+						role="dialog"></div>
+
+						<script src='assets/js/jquery.min.js'></script>
+
+						<script src="assets/js/underscore.js"></script>
+						<script src="assets/js/backbone.js"></script>
+
+						<script src="assets/js/knockout.js"></script>
+						<script src="assets/js/knockout.bootstrap.modal.js"></script>
+						<script src="assets/js/knockout-datatable.js"></script>
+						<script src="assets/js/knockout.validation.js"></script>
+
+						<script src='assets/js/bootstrap.min.js'></script>
+						<script src="assets/js/jquery-drag.js"></script>
+
+						<script src='assets/js/ui-load.js'></script>
+						<script src='assets/js/ui-jp.config.js'></script>
+						<script src='assets/js/ui-jp.js'></script>
+						<script src='assets/js/ui-nav.js'></script>
+						<script src='assets/js/ui-toggle.js'></script>
+
+						<script src="assets/js/ace.js"></script>
+						<script src="assets/js/ace.ajax-content.js"></script>
+						<script src="assets/js/app.ajax-content.js"></script>
+						<script src="assets/js/app.js"></script>
+						<script src="assets/js/request.js"></script>
+
+						<script src="assets/js/api.js"></script>
+						<script src="assets/js/api_test.js"></script>
+
+						<script src='assets/js/ajax-pushlet-client.js'></script>
+						<script src='assets/js/ajaxfileupload.js'></script>
+						<script src='assets/js/common.js'></script>
+						<script src='assets/lib/moment/moment.js'></script>
+						<script src='assets/lib/bootstrap-daterangepicker/daterangepicker.js'></script>
+						<!-- <script src="api/img/uploadPreview.js"></script> -->
+						<!-- <script src="api/systems/license/license.js"></script> -->
+						<script>
+							function logout() {
+								confirm("确定退出当前登录吗？", function(arg) {
+
+									var cookie = document.cookie;
+									//cookie是个字符串型的  判断其长度
+									if (cookie.length != 0) {
+										csc.rest.post("webapi/logout", {}, function(result) {
+											
+											window.location.href = "login.html";
+											//callback(data);
+											//alert("get data"+result.reolcation)
+											
+											//window.location.replace(result.relocation);
+											//window.location.href = "../../login.html";
+											//window.location.reload();
+										});
+										//alert("get data2 ")
+										//location.reload();
+									} else {
+										/*window.location.href = "../../login.html";
+										window.location.reload();*/
+										//alert("get data else")
+										//location.reload();
+									}
+								});
+
+							}
+
+							!function($) {
+								var baseUrl = './webapi'
+								$.loginUser = {
+
+									query : function(param, callback, errorCallback) {
+										$.ajax({
+											url : baseUrl + '/selfInfo',
+											data : param,
+											type : 'GET',
+											success : function(data) {
+												if (callback)
+													callback(data);
+											},
+											error : function(data) {
+												if (errorCallback)
+													errorCallback(data);
+											}
+										})
+									},
+
+									update : function(param, callback, errorCallback) {
+										$.ajax({
+											url : baseUrl + '/selfInfo',
+											data : JSON.stringify(param),
+						contentType : "application/json",//必须有
+						type : 'PUT',
+						success : function(data) {
+							if (callback)
+								callback(data);
+						},
+						error : function(data) {
+							if (errorCallback)
+								errorCallback(data);
+						}
+					})
+									}
+
+								};
+							}(window.jQuery);
+						</script>
+
+						<script type="text/javascript">
+							var scripts = [ null, '' ];
+							//$('.page-content-area').ace_ajax('loadScripts', scripts,
+							//		function(query) {
+								function viewModel() {
+									var self = this;
+
+									this.loginUserVO = ko.observable({
+										"username" : ko.observable(''),
+										"role" : ko.observable(''),
+										"password" : ko.observable('')
+									});
+
+									csc.rest.get('./webapi/selfInfo', function(data) {
+										if(!data.exception)
+											self.loginUserVO(data)
+										else
+											window.location.href = "login.html";
+									});
+
+								}
+
+								ko.applyBindings(new viewModel(), $('#page-content')[0]);
+
+		//		})
+	</script>
+
+
+</body>
+
+</html>

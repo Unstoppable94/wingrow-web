@@ -1,0 +1,310 @@
+<div class="bg-light lter b-b wrapper-sm">
+  <ol class="breadcrumb">
+    <li>当前位置：</li>
+    <li class="active">项目组</li>
+  </ol>
+</div>
+
+<div class='wrapper-md' data-bind="with:groupVO"> 
+  <div class="panel panel-default b-blue">
+    <div class='wrapper-md'>
+    	<a class="btn btn-sm btn-default" href="#pages/projectGroup/index"><!-- <i class="fa fa-arrow-left"></i> --> 返回</a>
+    	<div>
+        <h5>
+          <i class="fa fa-minus fa-rotate-90 text-info"></i>基本信息
+        </h5>
+        
+        <div style="padding:10px;background-color: #F7F9F9">
+          <div class="row">
+            <div class="col-md-4">项目组名称：<span data-bind="text:name"></span></div>
+            <div class="col-md-4">创建时间：<span data-bind="text:moment(createtime).format('YYYY-MM-DD HH:mm:ss')"></span></div>
+          </div>
+          <p> </p>
+          <div>项目组描述：<span data-bind="text:description"></span></div>
+        </div>
+
+        <div class="clearfix">
+          <div style="width: 100px;float: left;" id="wave" >
+            <img style="width: 80px;margin: 17px 0 0 0;" data-bind="attr:{src:'assets/img/' + $root.imgSrc() + '.png'}"/>
+          </div>
+          <div style="float: left;background-color: #6679BA;color: #fff;padding:10px;    margin: 15px 0 0 20px;    width: 400px;" data-bind="with:stat">
+            <div class="row">
+              <div class="col-md-6">项目总数：<span data-bind="text:total"></span>   </div>
+              <div class="col-md-6"></div>
+            </div>
+            <p> </p>
+            <div class="row">
+              <div class="col-md-6">执行中数量：<span data-bind="text:running"></span></div>
+              <div class="col-md-6">等待中数量：<span data-bind="text:inqueue"></span></div>
+            </div>
+            <p> </p>
+            <div class="row">
+              <div class="col-md-6">成功数量：<span data-bind="text:success"></span></div>
+              <div class="col-md-6">失败数量：<span data-bind="text:failed"></span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="row" style="margin:10px 0">
+            <div class="col-xs-4">
+              <h5>
+                <i class="fa fa-minus fa-rotate-90 text-info"></i>项目列表
+              </h5>
+            </div>
+            <div class="col-xs-2">
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">执行状态</span>
+                <select class="form-control" data-bind="value:$root.searchParam().status">
+                  <option value="">全部</option>
+                  <option value="IN_PROGRESS">构建中</option>
+                  <option value="FAILED">构建失败</option>
+                  <option value="SUCCESS">构建成功</option>
+                  <option value="NOTBUILD">没有构建</option>
+                </select>
+              </div>       
+            </div>
+            <div class="col-xs-2">
+              <div class="input-group input-group-sm">
+                <span class="input-group-addon">项目类型</span>
+                <select class="form-control input-sm" data-bind="options:$root.projectTypeList,optionsText:'name',optionsValue:'name',value:$root.searchParam().projectType"></select>
+              </div>       
+            </div>
+            <div class="col-xs-2">
+              <div class="input-group">
+                <span class="input-group-addon">项目名称</span>
+                <input type="text" style="width: 135px" placeholder="请输入名称" class="form-control input-sm" data-bind="enterKey: $root.searchProject, textInput:$root.searchParam().name">
+              </div>       
+            </div>
+            <div class="col-xs-2">
+              <a class="btn btn-default btn-sm" data-bind='click:$root.searchProject'>搜索</a>
+              <a class="btn btn-default btn-sm" data-bind="click:$root.resetProject">重置</a>
+            </div>        
+          </div>
+          <!-- <h5 class="clearfix">
+            <div style="display: inline-block;width: 260px;float: right">
+              <div class="input-group pull-left" style="    width: 214px;" >
+                <span class="input-group-addon">项目名称</span>
+                <input type="text" style="width: 135px" placeholder="请输入名称" class="form-control input-sm">
+              </div>
+              <button class="btn btn-sm btn-default pull-left">搜索</button>
+            </div>
+            <i class="fa fa-minus fa-rotate-90 text-info"></i>项目列表
+          </h5> -->
+          <div class="table-responsive" data-bind="with:$root.dataTable">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>项目名称</th>
+                  <th>项目类型</th>
+                  <th>当前状态</th>
+                  <th>最后构建时间</th>
+                  <th>执行时长(分钟)</th>
+                  <th>最后结果物</th>
+                  <th>最后image下载命令</th>
+                </tr>
+              </thead>
+              <tbody >
+                <!-- ko foreach: {data: data, as: '$row'}  -->
+                <tr>
+                  <td><a  data-bind="attr:{href:'#pages/project/show?name=' + $row.id},text:$row.name"></a></td>
+                  <td data-bind="text:$row.projectType"></td>
+                  <td>
+                    <span data-bind="if:$row.status=='IN_PROGRESS'">构建中</span>
+                    <span data-bind="if:$row.status=='FAILED'">失败</span>
+                    <span data-bind="if:$row.status=='SUCCESS'">成功</span>
+                    <span data-bind="if:$row.status=='NOTBUILD'">没有构建</span>
+                  </td>
+                  <td data-bind="text:$row.lastBuild?moment($row.lastBuild).format('YYYY-MM-DD HH:mm:ss'):'-'"></td>
+                  <td data-bind="text:parseInt($row.duration/60000)"></td>
+                  <td>
+                    <span data-bind="if:!$row.artifact">-</span>
+                    <a data-bind="if:$row.artifactUrl,attr:{href:'./webapi/download?name=' + encodeURIComponent($row.artifact)}">结果下载</a>
+                  </td>
+                  <td data-bind="text:$row.imageCmd"></td>
+                </tr>
+                <!-- /ko -->
+                
+              </tbody>
+            </table>
+          </div>
+              <footer class="panel-footer"  data-bind="with: $root.dataTable,visible: $root.dataTable().totalPage() > 1">
+                <ul class="pagination">
+                  <li data-bind="attr:{class:currentPage() == 1 ? 'disabled' : ''},click: gotoFirstPage"><a
+                    href="#">首页</a>
+                  </li>
+                  <li data-bind="attr:{class:currentPage() == 1 ? 'disabled' : ''},click: prevPage"><a
+                    href="#">&laquo;</a>
+                  </li>
+                  <li><a href="#" data-bind="text: currentPage"></a></li>
+                  <li data-bind=" attr:{class:currentPage() == totalPage() ? 'disabled' : ''},click: nextPage">
+                    <a href="#">&raquo;</a>
+                  </li>
+                  <li data-bind=" attr:{class:currentPage() == totalPage() ? 'disabled' : ''},click: gotoLastPage">
+                    <a href="#">末页</a>
+                  </li>
+                  <li class="page-control-li">
+                    <div class="input-group form-group-sm">
+                      <input type="text" class="form-control"
+                      data-bind="value: targetPage" />
+                      <div class="input-group-btn">
+                        <a href="#" class="btn btn-sm btn-default"
+                        data-bind="click: gotoTargetPage">跳转</a>
+                      </div>
+                    </div>
+                    <div class="page-info-div" data-bind="text: recordsText"></div>
+                  </li>
+                </ul>
+              </footer>
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>
+    <script type="text/javascript">
+      var scripts = [ null ,"api/projectGroup/projectGroup.js",'api/MISC/MISC.js']
+      $('.page-content-area').ace_ajax('loadScripts', scripts, function(args) {
+
+        function viewModel() {
+          var self = this;
+
+          projectType = ko.observable("");
+          this.projectTypeList = ko.observableArray();
+          $.MISC.projectType.query(null,function(data){
+            data.unshift({"name":"全部","id":""});
+            self.projectTypeList(data);  
+          });
+
+    this.searchParam = ko.observable({
+      name : "",
+      projectType: "",
+      status:""
+    })
+    this.searchProject = function() {
+      self.dataTable().searchParam(self.searchParam());    
+    }
+    this.resetProject = function(){
+      self.searchParam({
+        name : "",
+        projectType: "全部",
+        status:""
+      })
+      $.projectGroup.get({id:args.id},function(data){
+        if(!data.exception)
+          initData(data)
+        else
+          alert('数据有误')
+      })
+    }
+
+    this.dataTable = ko.observable({
+      oriData:ko.observableArray(),
+      data:ko.observableArray(),
+      searchData:ko.observableArray(),
+      currentPage:ko.observable(1),
+      perPage:10,
+      page:ko.observable(1),
+      targetPage:ko.observable(),
+      recordsText:ko.observable(""),
+      totalPage:ko.observable(""),
+      gotoPage:function(page){
+        this.data(this.searchData().slice((this.currentPage()-1)*this.perPage,this.perPage*this.currentPage()));
+      },
+      gotoFirstPage:function(){
+        this.currentPage(1)
+        this.gotoPage(1)
+      },
+      gotoLastPage:function(){
+        var totalPage = Math.ceil(this.searchData().length / this.perPage);
+        this.currentPage(totalPage)
+        this.gotoPage(totalPage)
+      },
+      prevPage:function(){
+        if(this.currentPage() > 1){
+          this.currentPage(this.currentPage() - 1);
+          this.gotoPage(this.currentPage());
+        }       
+      },
+      nextPage:function(){
+        if(Math.ceil(this.searchData().length / this.perPage) > this.currentPage()){
+          this.currentPage(this.currentPage() + 1);
+          this.gotoPage(this.currentPage());
+        }
+      },
+      gotoTargetPage:function(){
+        if(this.targetPage() < 1 || this.targetPage() > Math.ceil(this.searchData().length / this.perPage)){
+          systemMsg.alert("输入页码不存在！");
+          this.targetPage(this.currentPage());
+          return false;
+        }
+        this.currentPage(this.targetPage());
+        this.gotoPage(this.currentPage());
+      },
+      searchParam:function(params){
+        var _data = [];   
+        for(var i = 0; i < this.oriData().length; i++){
+          var notHadData = false;
+          for(param in params){
+            console.log(params[param])
+            if(this.oriData()[i][param].indexOf(params[param]) < 0)
+              notHadData = true;
+          }
+          if(!notHadData)
+            _data.push(this.oriData()[i]);
+        };
+        this.searchData(_data);
+        this.currentPage(1);
+        this.data(this.searchData().slice(0,this.perPage));
+        this.recordsText(this.searchData().length + "条数据，" + "共" + Math.ceil(this.searchData().length / this.perPage) + "页");
+      },
+      init:function(data){
+        this.oriData(data);
+        this.searchData(data);
+        this.totalPage(Math.ceil(this.searchData().length / this.perPage));
+        this.data(this.searchData().slice(0,this.perPage));
+        this.recordsText(this.oriData().length + "条数据，" + "共" + Math.ceil(this.oriData().length / this.perPage) + "页");
+      }
+    })
+
+
+    this.groupVO = ko.observable({
+      stat:ko.observable(),
+      name:ko.observable(),
+      description:ko.observable(),
+      createtime:ko.observable()
+    });
+
+    this.projectList = ko.observableArray();
+    $.projectGroup.get({id:args.id},function(data){
+      if(!data.exception)
+        initData(data)
+      else
+        alert('数据有误')
+    })
+    this.imgSrc = ko.observable("status1");
+
+    function initData(data){
+      self.groupVO(data);
+      self.projectList(data.results);
+      self.dataTable().init(data.results);
+      if(data.stat.total > 10)
+
+      if(data.stat.total != 0)
+        setImg(parseInt((data.stat.success+1)/data.stat.total*100))
+    }
+    
+    function setImg(num){
+      var wave = $("#wave");
+      var _src = "";
+      if(num>=66)
+        _src = "status1"
+      if(num<66)
+        _src = "status3"
+      if(num<33)
+        _src = "status2"
+      self.imgSrc(_src);
+    }
+    
+  }
+  ko.applyBindings(new viewModel(), $('#page-content')[0]);
+})
+</script>

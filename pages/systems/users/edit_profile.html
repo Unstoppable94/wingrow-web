@@ -1,0 +1,49 @@
+<form id="userForm" class="form-horizontal" action="" method="post" >
+    <div class='modal-dialog modal-md' role='document'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <a class="close" data-bind="click:$root.editPasswordCancel"><span aria-hidden="true">&times;</span></a><h3 class='modal-title'>修改个人信息</h3>
+            </div>
+            <div class='modal-body' data-bind="with:editUser">
+                <div class="form-group">
+                    <label class="col-xs-3 control-label" for="">账号</label>
+                    <div class="col-xs-8">
+                        <input type="text" class="form-control" placeholder="" disabled data-bind="value:account">
+                    </div>
+                    <div class="col-xs-1">
+                      <span class="text-danger inline m-l-n m-t-sm">*</span>
+                    </div>                    
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-3 control-label" for="">昵称</label>
+                    <div class="col-xs-8">
+                        <input type="text" class="form-control" placeholder="昵称" maxlength="32" data-bind="value:name">
+                    </div>
+                    <div class="col-xs-1">
+                      <span class="text-danger inline m-l-n m-t-sm">*</span>
+                    </div>                    
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-3 control-label" for="">手机</label>
+                    <div class="col-xs-8">
+                        <input type="text" class="form-control" placeholder="手机号码" data-bind="value:mobile">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-3 control-label" for="">邮箱</label>
+                    <div class="col-xs-8">
+                        <input type="email" maxlength="32" class="form-control" placeholder="例如：example@email.com" data-bind="value:email">
+                    </div>
+                </div>
+            </div>
+            <div class='modal-footer'>
+                <button type="button" class="btn btn-info" data-bind="click:$root.editAction">确定</button>
+                <a class="btn btn-default" data-bind="click:$root.editCancel">取消</a>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+	ko.applyBindings(frameViewModel,$('#userForm')[0]);
+ </script>

@@ -1,0 +1,417 @@
+<link href="assets/lib/zTree/css/ibos/ibos.css" rel="stylesheet"
+	type="text/css" />
+<div class="bg-light lter b-b wrapper-sm">
+	<ol class="breadcrumb">
+		<li>当前位置：</li>
+		<li>系统</li>
+		<li><a href="#pages/systems/roles/index">角色管理</a></li>
+		<li class="active">角色分配用户</li>
+	</ol>
+</div>
+<div class="wrapper">
+	<a class="btn btn-sm btn-default" href="#pages/systems/roles/index"><i
+		class="fa fa-arrow-left"></i> 返回</a>
+</div>
+<div class='wrapper'>
+	<div class="row">
+		<div class="col-xs-3">
+			<div class="bg-white">
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#tab1"
+						aria-controls="home" role="tab" data-toggle="tab">组织目录</a></li>
+				</ul>
+
+				<div class="row-row">
+					<div class="cell scrollable hover">
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active" id="tab1">
+								<ul class="ztree" id="orgZtree"></ul>
+							</div>
+				        </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-9">
+			<div class="wrapper bg-white clearfix">
+				<div class='col-xs-5' style="min-width:350px;over-flow:auto;">
+					<p>预分配用户：</p>
+				    <div class="row">
+				      <div class="col-xs-12 form-inline">
+				          <div class="input-group">
+				             <span class="input-group-addon">用户账号</span><input class="input-sm form-control" style="width: 80px;" placeholder="用户账号" data-bind="textInput: searchParamL().id, enterKey: searchNameL">
+				          </div>   
+				          <div class="input-group">
+				            <span class="input-group-addon">用户昵称</span><input class="input-sm form-control" style="width: 80px;"  placeholder="用户昵称" data-bind="textInput: searchParamL().name, enterKey: searchNameL">
+				          </div> 
+				          <a class="btn btn-default btn-sm" data-bind="click: searchNameL">搜索</a>    
+				      </div>
+				    </div> 
+				    <br>
+					<div class="table-responsive" data-bind="with:tableLeft">
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>选择</th>
+								<th>账号</th>
+								<th>昵称</th>
+								<!-- <th>用户状态</th> -->
+							</tr>
+						</thead>
+						<tbody>
+							<tr data-bind="visible: showNoData">
+								<td colspan=5 class="aligncenter">暂无数据</td>
+							</tr>
+							<!-- ko foreach: {data: pagedRows, as: '$row'}  -->
+							<tr>
+								<td>
+									<div class="checkbox">
+										<label class="i-checks"> <input type="checkbox"
+											value="" data-bind="checkedValue: $row.id, checked: $parent.chosenItems"> <i></i>
+										</label>
+									</div>
+								</td>
+								<td data-bind="text: $row.id"></td>
+								<td data-bind="text: $row.name"></td>
+								<!-- <td><span class="label" data-bind="text: $row.stateName, css: {'label-danger':!$row.state,'label-success':$row.state}"></span></td> -->
+							</tr>
+							<!-- /ko -->
+						</tbody>
+					</table>
+					</div>
+					
+					<footer  data-bind="with: tableLeft, visible: tableLeft.pages() > 1"  style="width: 100%;text-align:right;">
+		              <ul class="pagination" style="float:none">
+				        <li data-bind="css: leftPagerClass, click: gotoPage(1)">
+				          <a href="#">首页</a>
+				        </li>
+				        <li data-bind="css: leftPagerClass, click: prevPage">
+				          <a href="#">&laquo;</a>
+				        </li>
+				        <li >
+				          <a href="#"  data-bind="text: currentPage"></a>
+				        </li>
+				        <li data-bind="css: rightPagerClass, click: nextPage">
+				          <a href="#">&raquo;</a>
+				        </li>
+				        <li data-bind="css: rightPagerClass, click: gotoPage(pages())">
+				          <a href="#">末页</a>
+				        </li>
+				        <li class="page-control-li">
+				          <div class="input-group form-group-sm">
+				            <input type="text" class="form-control" data-bind="value: targetPage"  />
+				            <div class="input-group-btn">
+				              <a href="#" class="btn btn-sm btn-default" data-bind="click: gotoTargetPage()">跳转</a>
+				            </div>
+				          </div>
+				          
+				        </li>
+				      </ul>
+				      <div class="page-info-div" data-bind="text: recordsText"></div>
+		       	  </footer>
+       	  
+				</div>
+
+				<div class="col-xs-1">
+					<a class="btn btn-block btn-default" style="margin-top: 150px; width: 36px;"
+						data-bind="click: addRoleUsers"><i class="fa fa-arrow-right"></i> </a>
+					<a class="btn btn-block btn-default" style="width: 36px;"
+						data-bind="click: removeRoleUsers"><i class="fa fa-arrow-left"></i></a>
+				</div>
+				<div class='col-xs-5' style="min-width:350px;over-flow:auto;">
+					<p>角色<span data-bind="text: roleName"></span>已分配用户：</p>
+					  <div class="row">
+					  <div class="col-xs-12 form-inline">
+				          <div class="input-group">
+				            <span class="input-group-addon">用户账号</span><input class="input-sm form-control" style="width:80px" placeholder="用户账号"  data-bind="textInput: searchParamR().id, enterKey: searchNameR">
+				          </div>  
+				          <div class="input-group">
+				            <span class="input-group-addon">用户昵称</span><input class="input-sm form-control" style="width:80px" placeholder="用户昵称"  data-bind="textInput: searchParamR().name, enterKey: searchNameR">
+				          </div> 
+				          <a class="btn btn-default btn-sm" data-bind="click: searchNameR">搜索</a>   
+				      </div>
+				    </div> 
+				    <br>
+					
+					<div class="table-responsive" data-bind="with:tableRight">
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>选择</th>
+								<th>账号</th>
+								<th>昵称</th>
+								<!-- <th>用户状态</th> -->
+							</tr>
+						</thead>
+						<tbody>
+							<tr data-bind="visible: showNoData">
+								<td colspan=5 class="aligncenter">暂无数据</td>
+							</tr>
+							<!-- ko foreach: {data: pagedRows, as: '$row'}  -->
+							<tr>
+								<td>
+									<div class="checkbox">
+										<label class="i-checks"> <input type="checkbox"
+											data-bind="checkedValue: $data.id, checked: $parent.chosenItems"> <i></i>
+										</label>
+									</div>
+								</td>
+								<td data-bind="text: $row.id"></td>
+								<td data-bind="text: $row.name"></td>
+								<!-- <td><span class="label" data-bind="text: $row.stateName, css: {'label-danger':!$row.state,'label-success':$row.state}"></span></td> -->
+							</tr>
+							<!-- /ko -->
+						</tbody>
+					</table>
+					</div>
+				   <footer data-bind="with: tableRight, visible: tableRight.pages() > 1" style="width: 100%;text-align:right;">
+		              <ul class="pagination" style="float:none" >
+				        <li data-bind="css: leftPagerClass, click: gotoPage(1)">
+				          <a href="#">首页</a>
+				        </li>
+				        <li data-bind="css: leftPagerClass, click: prevPage">
+				          <a href="#">&laquo;</a>
+				        </li>
+				        <li >
+				          <a href="#"  data-bind="text: currentPage"></a>
+				        </li>
+				        <li data-bind="css: rightPagerClass, click: nextPage">
+				          <a href="#">&raquo;</a>
+				        </li>
+				        <li data-bind="css: rightPagerClass, click: gotoPage(pages())">
+				          <a href="#">末页</a>
+				        </li>
+				        <li class="page-control-li">
+				          <div class="input-group form-group-sm">
+				            <input type="text" class="form-control" data-bind="value: targetPage"  />
+				            <div class="input-group-btn">
+				              <a href="#" class="btn btn-sm btn-default" data-bind="click: gotoTargetPage()">跳转</a>
+				            </div>
+				          </div>
+				          
+				        </li>
+				      </ul>
+				      <div class="page-info-div" data-bind="text: recordsText"></div>
+		       	  </footer>
+       	  
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	var scripts = [ null, 'assets/lib/zTree/js/jquery.ztree.core.js', null ]
+	$('.page-content-area').ace_ajax('loadScripts', scripts, function(args) {
+        var roleId = args.roleId;
+		function ViewModel() {
+			var start = 0;
+			var size = 0;
+			var userType = '0';
+			var orgId = '';
+			var self = this;
+			var setting = {
+				view : {
+					showIcon : false,
+					showLine : false
+				},
+				callback : {
+					onClick: search
+				}
+			};
+			this.roleName = ko.observable(args.name);
+			this.searchParamL = ko.observable({
+				name: "",
+				id:""
+			})
+			this.searchNameL = function(){
+				if(orgId == 0 || orgId == -1){
+					orgId = "";
+				}
+				self.searchParamLeft = {
+			    		orgId : orgId,
+			    		roleId : roleId,
+			    		nameLike : encodeURIComponent(this.searchParamL().name),
+			    		idLike : encodeURIComponent(this.searchParamL().id),
+			    		systemId : "",
+			    		start : start,
+			    		size : size,
+			    		userType : userType
+			    		};
+				  self.loadTableLeft();
+			}
+			this.searchParamR = ko.observable({
+				name: "",
+				id:""
+			})
+			this.searchNameR = function(){
+				if(orgId == 0 || orgId == -1){
+					orgId = "";
+				}
+				self.searchParamRight = {
+			    		orgId : orgId,
+			    		roleId : roleId,
+			    		nameLike : encodeURIComponent(this.searchParamR().name),
+			    		idLike : encodeURIComponent(this.searchParamR().id),
+			    		systemId : "csc5.0",
+			    		start : start,
+			    		size : size,
+			    		userType : userType
+			    		};
+				self.loadTableRight();
+				//alert(this.searchParamR().name)
+			}
+			
+			this.searchParamLeft = {start:0, size:0, roleId: roleId, systemId: "", userType : userType}
+			this.searchParamRight = {start:0, size:0, roleId: roleId, systemId: "csc5.0", userType : userType};
+
+			
+			function search(event, treeId, treeNode) {
+				if(treeNode.code == '0'){
+					self.searchParamLeft = {
+				    		orgId : "",
+				    		roleId : roleId,
+				    		systemId : "",
+				    		start : start,
+				    		size : size,
+				    		userType : treeNode.userType
+				    		};
+					self.searchParamRight = {
+							orgId : "",
+							roleId : roleId,
+							systemId : "csc5.0",
+				    		start : start,
+				    		size : size,
+							userType : treeNode.userType
+						};
+				}else if(treeNode.code == '-1'){
+					self.searchParamLeft = {
+				    		orgId : "",
+				    		roleId : roleId,
+				    		systemId : "",
+				    		start : start,
+				    		size : size,
+				    		userType : treeNode.userType
+				    		};
+					self.searchParamRight = {
+							orgId : "",
+							roleId : roleId,
+							systemId : "csc5.0",
+				    		start : start,
+				    		size : size,
+							userType : treeNode.userType
+						};
+				}else{
+					self.searchParamLeft = {
+							orgId : treeNode.code,
+							roleId : roleId,
+							systemId : "",
+				    		start : start,
+				    		size : size,
+							userType : treeNode.userType
+							};
+					self.searchParamRight = {
+							orgId : treeNode.code,
+							roleId : roleId,
+							systemId : "csc5.0",
+				    		start : start,
+				    		size : size,
+							userType : treeNode.userType
+						};
+				}
+			    orgId = treeNode.code;
+			    userType = self.searchParamLeft.userType;
+	            //self.tableLeft.params(searchParamLeft);
+	            //self.tableRight.params(searchParamRight);
+	            self.loadTableLeft();
+	            self.loadTableRight();
+			};
+			csc.rest.get('api/v5.0.0/uap/organizations', function(data) {
+				$.fn.zTree.init($("#orgZtree"), setting, data);
+			})
+			
+			this.addRoleUsers = function() {
+				var param = {};
+				var leftUsers = self.tableLeft.chosenItems().join(",");
+						param.id = leftUsers;
+						param.name = args.name;
+						param.userType = userType;
+					    csc.rest.put('api/v5.0.0/uap/'+roleId , param,
+										function() {
+									    	self.loadTableLeft();
+									    	self.loadTableRight();		 
+					    				  
+										});
+				/* 		});   */ 
+			};
+			this.removeRoleUsers = function() {
+				var param = {};
+				var leftUsers = self.tableRight.chosenItems().join(",");
+					    param.id = leftUsers;
+					    param.name = args.name;
+					    param.userType = userType;
+					    //去除rightUsers中包含的leftUsers用户
+						csc.rest.put('api/v5.0.0/uap/delete/'+roleId, param,
+					       function() {
+							  self.loadTableLeft();
+							  self.loadTableRight();
+						});
+				/* 	});  */
+			}
+			
+			function getCharge(check,data) {
+			  var userId = [];
+			  var temps = '';
+		      userId = check.split(',');
+		      
+			  for(var i=0;i<data.results.length;i++){
+				  if(determine(userId,data.results[i].id)){
+					  temps += (data.results[i].id + ',');
+				  }
+			  }
+			  return temps;
+			}
+			
+			function determine(userId,data){
+				for(var j=0;j<userId.length-1;j++){
+					if(data == userId[j]){
+						return false;
+					}
+				}
+				return true;
+			}
+
+            //初始化预分配表格
+			this.tableLeft = new DataTable([], {enabled: false,perPage:8});
+            this.loadTableLeft = function(){
+            	var params = this.searchParamLeft;
+            	csc.rest.get('/wg/api/v5.0.0/uap/roleUsers?start='+params.start+'&size='+params.size
+            			+(params.roleId ? '&roleId='+ params.roleId:'')
+            			+(params.nameLike ? '&nameLike='+ params.nameLike:'')
+            			+(params.idLike ? '&idLike='+ params.idLike:'')
+            			+(params.orgId ? '&orgId='+params.orgId:'')
+            			//+(params.systemId ? '&systemId='+params.systemId:'')
+            			+(params.userType ? '&userType='+params.userType:''), function(data){
+            		self.tableLeft.replaceRows(data.results);
+            	})
+            }
+			//初始化已分配表格
+			this.tableRight = new DataTable([], {enabled: false,perPage:8});
+			this.loadTableRight = function(){
+				var params = this.searchParamRight;
+				csc.rest.get('/wg/api/v5.0.0/uap/users?start='+params.start+'&size='+params.size
+            			+(params.roleId ? '&roleId='+ params.roleId:'')
+            			+(params.nameLike ? '&nameLike='+ params.nameLike:'')
+            			+(params.idLike ? '&idLike='+ params.idLike:'')
+            			+(params.orgId ? '&orgId='+params.orgId:'')
+            			+(params.systemId ? '&systemId='+params.systemId:'')
+            			+(params.userType ? '&userType='+params.userType:''), function(data){
+            		self.tableRight.replaceRows(data.results);
+            	})
+            }
+			this.loadTableLeft();
+			this.loadTableRight();
+
+		}
+		ko.applyBindings(new ViewModel(), $('#page-content')[0]);
+	});
+</script>

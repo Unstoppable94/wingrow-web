@@ -1,0 +1,6 @@
+.vbox .row-row .cell {
+   	overflow: auto!important;
+}
+.vbox .row-row .cell .cell-inner {
+	overflow:visible!important;
+}

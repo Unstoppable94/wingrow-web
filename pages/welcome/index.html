@@ -1,0 +1,426 @@
+<div class="wrapper-md">
+  <div class="panel panel-default" id="systemTotal">
+    <div class="panel-heading" style="height:50px">
+      <h5 class="pull-left">系统总览 <a class='show-fullscreen-btn' onclick="$('#systemTotal').showByFullScreen()">全屏显示</a> <a  class='hide-fullscreen-btn' onclick="exitFullScreen()">退出全屏</a></h5>
+      <div class="pull-right">
+        <!-- <div class="input-group input-group-sm" style="width:200px">
+          <div class="input-group-addon">系统：</div>
+          <select class="form-control">
+            <option>CSC</option>
+          </select>
+        </div> -->
+      </div>
+    </div>
+    <div class="panel-body">
+      <div id="totalBar" style="width:100%;height: 300px;"></div>
+    </div>
+  </div>
+
+  <div class="panel panel-default" id="buildedTotal">
+    <div class="panel-heading" style="height:50px">
+      <h5 class="pull-left">构建数总览 <a class='show-fullscreen-btn' onclick="$('#buildedTotal').showByFullScreen()">全屏显示</a> <a  class='hide-fullscreen-btn' onclick="exitFullScreen()">退出全屏</a></h5>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div style="margin-left:38px;margin-bottom: 10px;">
+            选择时间：<input id="datePickerTotal" class="form-control input-sm" type="text" style="display: inline-block;width: 288px;"  /> <button class="btn btn-sm btn-success" style="position: relative;top:-2px">查看</button>
+          </div>
+          <div id="buildingColumn" style="width:100%;height: 300px;"></div>
+        </div>
+        <div class="col-md-6">
+          <div style="margin-left:38px;margin-bottom: 10px">
+            选择时间：<input id="datePickerDetailed" class="form-control input-sm" type="text" style="display: inline-block;width: 288px"  /> <button class="btn btn-sm btn-success" style="position: relative;top:-2px">查看</button>
+          </div>
+          <div id="buildingLine" style="width:100%;height: 300px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default" id="recentBuilded">
+    <div class="panel-heading" style="height:50px">
+      <h5 class="pull-left">最近构建 <a class='show-fullscreen-btn' onclick="$('#recentBuilded').showByFullScreen()">全屏显示</a> <a  class='hide-fullscreen-btn' onclick="exitFullScreen()">退出全屏</a></h5>
+      
+    </div>
+    <div class="panel-body">
+      
+      <div>
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">最近构建项目</a></li>
+          <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">最近构建失败项目</a></li>
+        </ul>
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="home">
+            <div class="building-legend">
+              <div class="legend-success">
+                <div class="legend-img"></div>
+                <div class="legend-name">执行成功</div>
+              </div>
+              <div class="legend-error">
+                <div class="legend-img"></div>
+                <div class="legend-name">执行失败</div>
+              </div>
+              <div class="legend-stop">
+                <div class="legend-img"></div>
+                <div class="legend-name">终止</div>
+              </div>
+            </div>
+            <div id="closeBuilding" class="timeline-box" style="width:100%;height: 520px;"></div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="profile">
+            <div role="tabpanel" class="tab-pane active" id="home">
+            <div class="building-legend">
+              <div class="legend-success">
+                <div class="legend-img"></div>
+                <div class="legend-name">执行成功</div>
+              </div>
+              <div class="legend-error">
+                <div class="legend-img"></div>
+                <div class="legend-name">执行失败</div>
+              </div>
+              <div class="legend-stop">
+                <div class="legend-img"></div>
+                <div class="legend-name">终止</div>
+              </div>
+            </div>
+            <div id="closeFailedBuilding" class="timeline-box" style="width:100%;height: 520px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="autoRefresh">
+    <span class="glyphicon glyphicon-refresh pull-right" aria-hidden="true"></span>
+    <div class="auto-refresh-tips">此处为定时刷新，设置后每隔5分钟刷新一次数据。</div>
+  </div>
+</div>
+<script type="text/javascript">
+  var scripts = [null,"assets/lib/highcharts/highstock.js","api/dashboard/dashboard.js","assets/lib/moment/moment.js","assets/js/temp/tempData.js","assets/lib/bootstrap-daterangepicker/daterangepicker.js"];
+  $('.page-content-area').ace_ajax('loadScripts', scripts, function(query) {
+
+    initChart();
+   // $.dashboard.totalstatus(null,function(data){
+   //  console.log(data);
+   // })
+
+    function initChart(){
+      $.dashboard.totalstatus(null,function(data){
+        initTotalBar(data);
+      });
+
+      $.dashboard.totalbuildstatus(null,function(data){
+        initBuldingColumn(data);
+      });
+
+      $.dashboard.totalbuildsdetail(null,function(data){
+        initBuldingLine(data);
+      });
+
+      $.dashboard.recentruns(null,function(data){
+        initDrawBuilding('#closeBuilding',data);
+      });
+
+      $.dashboard.recentruns({status:'failed'},function(data){
+        initDrawBuilding('#closeFailedBuilding',data);
+      });
+    }
+
+    $("#datePickerTotal").val(moment().format('YYYY/MM/DD HH:mm:ss')).daterangepicker({
+      startDate: moment(),
+      timePicker:true,
+      separator:'-',
+      locale:{
+        format:'YYYY/MM/DD HH:mm:ss'
+      }
+    }).next().bind('click',function(){
+      var _date = getTime($("#datePickerTotal").val());
+      $.dashboard.totalbuildstatus({startTime:_date[0],endTime:_date[1]},function(data){
+        initBuldingColumn(data);
+      });   
+    }); 
+
+    $("#datePickerDetailed").val(moment().format('YYYY/MM/DD HH:mm:ss')).daterangepicker({
+      startDate: moment(),
+      timePicker:true,
+      separator:'-',
+      locale:{
+        format:'YYYY/MM/DD HH:mm:ss'
+      }
+    }).next().bind('click',function(){
+      var _date = getTime($("#datePickerTotal").val())
+      $.dashboard.totalbuildsdetail({startTime:_date[0],endTime:_date[1]},function(data){
+        initBuldingLine(data);
+      });
+    }); 
+
+    $(".daterangepicker_input input").on("focus",function(){
+      this.blur();
+    })
+
+    function getTime(value){
+      var val = value.trim().split("至");
+      return [new Date(val[0]).getTime(),new Date(val[1]).getTime()];
+    }
+
+    var refreshInterval = null;
+    var animationning = false;
+    $("#autoRefresh").bind('click',function(){
+      var $this = $(this);
+      if(!animationning){
+        $this.css('background-color','#3CA759').find('.glyphicon').addClass('fa-spin');
+        refreshInterval = setInterval(function(){
+          var _hash = window.location.hash;
+          if(_hash.indexOf('pages/welcome/index') > -1){
+            initChart();
+          }else
+            clearInterval(refreshInterval)
+        },50000)
+        animationning = true;
+      }else{
+        clearInterval(refreshInterval);
+        $this.css('background-color','#3F3F3F').find('.glyphicon').removeClass('fa-spin');
+        animationning = false;
+      }
+      
+    });
+
+    var dataTemp = {"total":14,"failed":8,"running":0,"inqueue":0,"nobuilt":1,"success":5}
+
+    // initTotalBar(dataTemp);
+    // initBuldingColumn(dataTemp);
+    // initBuldingLine();
+    // initDrawBuilding('#closeBuilding',timeLineData);
+    // initDrawBuilding('#closeFailedBuilding',timeLineData);
+
+    function initTotalBar(Data){
+      var data = [{
+        name: '项目总数',
+        data: [Data.total]
+      }, {
+        name: '执行中数量',
+        data: [Data.running]
+      }, {
+        name: '等待中数量',
+        data: [Data.inqueue]
+      }, {
+        name: '执行成功数量',
+        data: [Data.success]
+      }, {
+        name: '执行失败数量',
+        data: [Data.failed]
+      }];
+      $('#totalBar').highcharts({
+        chart: {
+          type: 'bar'
+        },
+        title: {
+          text: false
+        },
+        subtitle: {
+          text: false
+        },
+        xAxis: {
+          categories:[""],
+          title: "个"
+        },
+        yAxis: {
+          min: 0,
+          title: "个",
+          labels: {
+            overflow: 'justify'
+          }
+        },
+        tooltip: {
+          valueSuffix: ' 个'
+        },
+        plotOptions: {
+          bar: {
+            dataLabels: {
+              enabled: true
+            }
+          }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y} 个</b></td></tr>',
+            footerFormat: '</table>',
+            useHTML: true
+        },
+        legend: {
+          align: 'lefttop',
+          verticalAlign: 'top',
+          floating: false,
+          borderWidth: 0,
+          backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF')
+        },
+        credits: {
+          enabled: false
+        },
+        series: data
+      });
+    };
+    function initBuldingColumn(Data){
+      var data = [
+        {name:'执行中',y:Data.running,color:"#23B7E5"},
+        {name:'等待中',y:Data.inqueue,color:"#FAD733"},
+        {name:'执行成功',y:Data.success,color:"#27C24C"},
+        {name:'执行失败',y:Data.failed,color:"#F05050"},
+        {name:'终止',y:Data.aborted,color:"#333"}
+      ];
+      $('#buildingColumn').highcharts({
+        chart: {
+          type: 'column'
+        },
+        title: {
+          text: '不同状态构建数'
+        },
+        subtitle: {
+          text: false
+        },
+        credits: {
+          enabled: false
+        },
+        xAxis: {
+          type: 'category'
+          // categories: [
+          //   '执行中数量','等待中数量','执行成功数量','执行失败数量'
+          // ],
+          //crosshair: true
+        },
+        yAxis: {
+          min: 0,
+          title: {
+            text: '单位 (个)'
+          }
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+          headerFormat: '<span style="font-size:10px">{point.key}: {point.y}</span>',
+          pointFormat: '',
+          footerFormat: '',
+         // shared: true,
+          useHTML: true
+        },
+        plotOptions: {
+
+          column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+          }
+        },
+        series:[{
+          data: data
+        }]
+      });
+    }
+    
+    function initBuldingLine(data){
+      var Data = [];
+      for(var i = 0; i < data.length; i++){
+        Data.push([data[i].runTime,data[i].number]);
+      }
+      $('#buildingLine').highcharts({
+        chart: {
+          type: 'spline'
+        },
+        title: {
+          text: '不同时间段构建数'
+        },
+        subtitle: {
+          text: false
+        },
+        credits: {
+          enabled: false
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip:{
+          formatter:function(){
+            return moment(this.x).format("YYYY-MM-DD HH:mm:ss")
+          }
+        },
+        xAxis: {
+          type:"datetime",
+          gridLineColor:"#eee",
+          gridLineWidth:1,
+          labels:{
+            formatter:function(){
+              return moment(this.value).format("YYYY-MM-DD HH:mm:ss")
+            }
+          },
+          
+          title: {
+              text: null
+          }
+        },
+        yAxis: {
+          gridLineColor:"#eee",
+          gridLineWidth:1,
+          title: {
+            text: '单位 (个)'
+          }
+        },
+        plotOptions: {
+          line: {
+            dataLabels: {
+                enabled: true          // 开启数据标签
+              },
+            enableMouseTracking: false // 关闭鼠标跟踪，对应的提示框、点击事件会失效
+          }
+        },
+        series: [{
+          data: Data
+        }]
+      });
+    }
+
+    function initDrawBuilding(content,data){
+      var content = $(content);
+      content.html('');
+      init();
+      function init(){
+        buildProjects(data);
+      };
+      function buildProjects(data){
+        $.each(data,function(n,v){
+          var item = $("<div class='timeline-item'></div>").appendTo(content);
+          item.append('<div class="item-info"><div class="item-name text-ellipsis">' + v.name +'</div><div class="item-createtime">' + moment(new Date(parseInt(v.startTimeMillis))).format("YYYY-MM-DD HH:mm:ss") + '</div></div><div class="item-stages"></div>');
+          if(v.stages && v.stages.length > 0){
+            var _stageBox = item.find(".item-stages");
+            $.each(v.stages,function(a,b){
+              var _stage = $("<div class='item-stage'></div>");
+              _stageBox.append(_stage);
+              if(a != v.stages.length-1)
+                _stage.addClass("have-triangle");
+              $("<div class='stage-status'></div>").css("background-image",'url(assets/img/steps/' + getColorByStatus(b.status) + ')').appendTo(_stage);
+              _stage.append('<div class="stage-name text-ellipsis">' + b.name +'</div>');
+              _stage.append('<div class="stage-time">' + b.durationMillis + ' ms' +'</div>');
+            });
+          }
+        });
+      }
+
+      function getColorByStatus(status){
+        var img = '';
+        switch(status){
+          case "SUCCESS":
+            img = 'success';
+            break;
+          case "FAILED":
+            img = 'failed';
+            break;
+          default:
+            img = 'stop';
+            break;
+        }
+        return img + '.png';
+      }
+    };
+
+  })
+</script>

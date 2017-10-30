@@ -1,0 +1,462 @@
+<div class="bg-light lter b-b wrapper-sm">
+	<ol class="breadcrumb">
+		<li>当前位置：</li>
+		<li class="active">用户</li>
+	</ol>
+</div>
+<div class='wrapper-md'>
+	<div class="panel panel-default b-blue">
+		<div class="row wrapper">
+			<div class="col-xs-4">
+				<a href="#" class="btn btn-sm btn-success"
+				data-bind="click: showAddPage">创建用户</a>
+			</div>
+			<div class="col-xs-2">
+				<div class="input-group input-group-sm">
+					<span class="input-group-addon">角色类型</span>
+					<select class="form-control" data-bind="value:$root.searchParam().role">
+						<option value="">全部</option>
+						<option value="admin">管理员</option>
+						<option value="operator">操作员</option>
+						<option value="readonly">只读</option>
+					</select>
+				</div>       
+			</div>
+			<div class="col-xs-2">
+				<div class="input-group input-group-sm">
+					<span class="input-group-addon">用户类型</span>
+					<select class="form-control" data-bind="value:$root.searchParam().userType">
+						<option value="">全部</option>
+						<option value="local">本地用户</option>
+						<option value="ladp">LADP用户</option>
+					</select>
+				</div>       
+			</div>
+			<div class="col-xs-2">
+				<div class="input-group">
+					<span class="input-group-addon">用户名称</span> <input type="text"
+					placeholder="请输入名称" class="form-control input-sm"
+					data-bind="enterKey: search, textInput: searchParam().username">
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<a class="btn btn-default btn-sm" data-bind="click: search">搜索</a>
+				<a class="btn btn-default btn-sm" data-bind="click: reset">重置</a>
+			</div>
+		</div>
+		<div class="table-responsive" data-bind="with: roleTable">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>用户名称</th>
+						<th>用户类型</th>
+						<th>用户角色</th>
+						<th>创建时间</th>
+						<th>修改时间</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- <tr data-bind="visible: showNoData">
+            <td colspan="4" class="aligncenter">
+             	 暂无数据
+            </td>
+        </tr> -->
+        <!-- ko foreach: {data: pagedRows, as: '$row'}  -->
+        <tr>
+					<!--	<td data-bind=" attr:{'title': $row.username}"><a
+					data-bind="text: $row.username></a> -->
+				</td>
+				<td data-bind="text:  $row.username"></td>
+				<td>
+					<span data-bind="if:$row.userType == 'local'">本地用户</span>
+					<span data-bind="if:$row.userType == 'ladp'">LADP用户</span>
+					<td>
+						<span class="label label-warning" data-bind="if:$row.role == 'operator'">操作员</span>
+						<span class="label label-success" data-bind="if:$row.role == 'readonly'">只读</span>
+						<span class="label label-danger" data-bind="if:$row.role == 'admin'">管理员</span>
+					</td>
+
+					<!--<td data-bind="text: $row.role"></td>  -->	
+
+					<td data-bind="text:  moment($row.createTime).format('YYYY-MM-DD HH:mm:ss')"></td>
+					<!-- data.createtime <td data-bind="text: $row.latestModifyTime"></td> -->
+					<td data-bind=" text: moment($row.latestModifyTime).format('YYYY-MM-DD HH:mm:ss')"></td>
+					<td><span><a data-bind="click: $root.showEditPage">修改</a>
+						| </span> <span data-bind="if:$row.userType == 'local'"><a data-bind="click: $root.resetPsd">重置密码</a>
+						| </span> <span><a data-bind="click: $root.remove">删除</a></span></td>
+
+					</tr>
+					<!-- /ko -->
+				</tbody>
+			</table>
+		</div>
+		<footer class="panel-footer" data-bind="with: roleTable, visible: roleTable.pages() > 1">
+			<ul class="pagination">
+				<li data-bind="css: leftPagerClass, click: gotoPage(1)">
+					<a href="#">首页</a>
+				</li>
+				<li data-bind="css: leftPagerClass, click: prevPage">
+					<a href="#">&laquo;</a>
+				</li>
+				<li >
+					<a href="#"  data-bind="text: currentPage"></a>
+				</li>
+				<li data-bind="css: rightPagerClass, click: nextPage">
+					<a href="#">&raquo;</a>
+				</li>
+				<li data-bind="css: rightPagerClass, click: gotoPage(pages())">
+					<a href="#">末页</a>
+				</li>
+				<li class="page-control-li">
+					<div class="input-group form-group-sm">
+						<input type="text" class="form-control" data-bind="value: targetPage"  />
+						<div class="input-group-btn">
+							<a href="#" class="btn btn-sm btn-default" data-bind="click: gotoTargetPage()">跳转</a>
+						</div>
+					</div>
+					<div class="page-info-div" data-bind="text: recordsText"></div>
+				</li>
+			</ul>
+		</footer>  
+	</div>
+</div>
+
+<!-- 新增修改页面 -->
+<!-- 新增修改页面 -->
+<div role="dialog" aria-hidden="true" class="modal fade"
+data-bind="modal: { show: isAdd }">
+<div class='modal-dialog'>
+	<div class='modal-content'>
+		<div class='modal-header'>
+			<a class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></a>
+			<h3 class='modal-title' data-bind="ifnot: currentVO().id">创建用户</h3>
+			<h3 class='modal-title' data-bind="if: currentVO().id">修改用户</h3>
+		</div>
+		<div class='modal-body form-horizontal row'>
+			<div class="form-group" data-bind="ifnot: currentVO().id" style="margin-bottom:0">
+				<label class="col-xs-3 control-label">用户名称</label>
+				<div class="col-xs-8">
+					<input type="text" class="form-control" maxlength="32"
+					data-bind="value: currentVO().username">
+				</div>
+				<div class="col-xs-1">
+					<span class="text-danger inline m-l-n m-t-sm">*</span>
+				</div>
+			</div>
+			<div class="form-group" data-bind="if: currentVO().id">
+				<label class="col-xs-3 control-label">用户名称</label>
+				<div class="col-xs-8">
+					<input  readonly type="text" class="form-control" maxlength="32"
+					data-bind="value: currentVO().username">
+				</div>
+				<div class="col-xs-1">
+					<span class="text-danger inline m-l-n m-t-sm">*</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-xs-3 control-label">用户类型</label>
+				<div class="col-xs-8">
+					<select class="form-control" data-bind="value: currentVO().userType">
+						<option value="local">本地用户</option>
+						<option value="ladp">LADP用户</option>
+					</select>
+				</div>
+				<div class="col-xs-1">
+					<span class="text-danger inline m-l-n m-t-sm">*</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-xs-3 control-label">角色类型</label>
+				<div class="col-xs-8">
+					<select class="form-control" data-bind="value: currentVO().role">
+						<option value="admin">管理员</option>
+						<option value="operator">操作员</option>
+						<option value="readonly">只读</option>
+					</select>
+				</div>
+				<div class="col-xs-1">
+					<span class="text-danger inline m-l-n m-t-sm">*</span>
+				</div>
+			</div>
+			<div class="form-group" data-bind="ifnot: currentVO().id">
+				<label class="col-xs-3 control-label">密码</label>
+				<div class="col-xs-8">
+					<input type="password" class="form-control" maxlength="32"
+					data-bind="value: currentVO().password,event:{blur:checkPsd}" id="password">
+				</div>
+				<div class="col-xs-1">
+					<span class="text-danger inline m-l-n m-t-sm">*</span>
+				</div>
+			</div>
+			<div class="form-group checkMsg" data-bind="ifnot: currentVO().id">
+				<label class="col-xs-3 control-label">确认密码</label>
+				<div class="col-xs-8">
+					<input type="password" class="form-control confirmPassword" maxlength="32"
+					data-bind="value: currentVO().confirmPassword,event:{blur:checkPsd}">
+				</div>
+				<div class="col-xs-1">
+					<span class="text-danger inline m-l-n m-t-sm">*</span>
+				</div>
+			</div>
+			<span class="error" style="display:none;position: absolute;color: red;left: 180px;bottom: 12px">密码必须一致</span>
+				<!-- 
+				<div class="form-group">
+					<label class="col-xs-3 control-label">角色</label>
+					<div class="col-xs-8">
+						<input type="text" class="form-control" maxlength="32"
+							data-bind="value: currentVO().role">
+					</div>
+				</div>
+			-->
+		</div>
+		<div class='modal-footer' style="text-align: center;">
+			<button type="button" class="btn btn-info"
+			data-bind="click: okBtnFun">确定</button>
+			<a class="btn btn-default" data-dismiss="modal">取消</a>
+		</div>
+	</div>
+</div>
+</div>
+
+<script type="text/javascript">
+	var scripts = [ null,
+	"api/user/usermanage.js" ]
+	$('.page-content-area').ace_ajax(
+		'loadScripts',
+		scripts,
+		function(args) {
+
+			function viewModel() {
+				var self = this;
+				this.isAdd = ko.observable(false);
+
+				this.currentVO = ko.validatedObservable({
+					"id" : ko.observable(null),
+					"username" : ko.observable("").extend({
+						required : true,
+						cscNameRule : true,
+						maxLength : 32
+					}),
+					"password" : ko.observable("").extend({
+						required : true,
+						maxLength : 30
+					}),
+					"role" : ko.observable("").extend({
+						required : true,
+						maxLength : 30
+					}),
+					"userType" : ko.observable("").extend({
+						required : true,
+						maxLength : 30,
+
+					}),
+					"confirmPassword" : ko.observable("").extend({
+						required : true,
+						maxLength : 30,
+							//equal : {params:self.password}
+						}),
+				});
+				this.oldVO = ko.observable({});    
+
+					//显示添加页面
+					this.showAddPage = function() {
+						self.currentVO.fromJSON({
+							id : "",
+							username : "",
+							password : "",
+							role : "",
+							userType : "",
+							confirmPassword : ""
+						});
+						self.isAdd(true);
+					}
+					//创建
+					this.createProjectGroup = function(currentVO) {		
+						params = {
+							id : null,
+							username : currentVO.username(),
+							password : currentVO.password(),
+							role : currentVO.role(),
+							userType : currentVO.userType(),
+							confirmPassword : currentVO.confirmPassword(),
+						};
+						ko.validation.group(self.currentVO).showAllMessages();
+						if(!self.checkPsd()) return;
+						if (self.currentVO.isValid()) {
+							$.usermanage.create(params, function(data) {
+								console.log(data)
+								if (!(data.exception)) {
+									self.isAdd(false);
+									self.roleTable.refreshData();
+									alert("创建成功！");
+								}  
+							});
+						}
+					}
+
+					//显示编辑页面
+					this.showEditPage = function(object, event) {
+						self.oldVO({
+							username : object.username,
+							//password : object.password,
+							userType : object.userType,
+							role : object.role,
+
+						});
+						self.currentVO.fromJSON(object);
+
+						self.isAdd(true);
+					}
+					//判断是否已修改
+					this.isChanged = function(o1, o2) {
+						console.log(o2)
+						if (o1.username == o2.username().trim()
+								//&& o1.password == o2.password().trim()
+								&& o1.userType == o2.userType().trim()
+								&& o1.role == o2.role().trim()) {
+							return false;
+					} else {
+						return true;
+					}
+				}
+					//修改信息
+					this.editGroup = function(currentVO) {
+						if (self.isChanged(self.oldVO(), currentVO)) {
+							params = {
+								id : currentVO.id(),
+								username : currentVO.username().trim(),
+								//password : currentVO.password().trim(),
+								role : currentVO.role().trim(),
+								userType : currentVO.userType().trim()
+							};
+							$.usermanage.update({
+								username : params.username
+							}, params, function(data) {
+								if (!data.exception) {
+									self.isAdd(false);
+									self.roleTable.refreshData();
+									alert("修改成功！");
+								}
+
+							});
+						} else {
+							self.isAdd(false);
+						}
+					}
+					//验证“确认密码”
+					this.checkPsd = function(){
+						var flag = false;
+						var password = this.currentVO().password();
+						var confirmPassword = this.currentVO().confirmPassword();
+
+						if(confirmPassword === ""){
+							$('.error').hide();
+						}else{
+							if(password === confirmPassword ){
+								$('.error').hide();
+								$('.confirmPassword').attr('style','')
+								flag = true;
+							}
+							else{
+								$('.error').show();
+								$('.confirmPassword').attr('style','border: 1px solid red;')
+							}
+						}
+						return flag;
+					}
+
+					//确定按钮
+					this.okBtnFun = function(object) {
+						//如果id为空，则新增
+						if (!self.currentVO().id()) {
+							self.createProjectGroup(self.currentVO());
+							//修改
+						} else {
+							self.editGroup(self.currentVO());
+						}
+					}
+					//删除角色
+					this.remove = function(roleObj) {
+						var name = roleObj.username;
+						confirm("确定删除[" + name + "]？", function(arg) {
+							$.usermanage.del({
+								username : roleObj.username
+							}, function(data) {
+								if (!data.exception) {
+									self.roleTable.refreshData();
+									alert("删除[" + name + "]成功！")
+								}
+							});
+						});
+					}
+
+					//判断是否已重置
+					this.isChangedPsd = function(o1, o2) {
+						console.log(o2)
+						if (o1.password == o2.password.trim()) {
+							return false;
+						} else {
+							return true;
+						}
+					}
+
+					//重置密码
+					this.resetPsd = function(currentVO){
+						confirm('确定要重置该用户的密码？',function(arg){
+							if (self.isChangedPsd(self.oldVO(), currentVO)) {
+								params = {
+									id : currentVO.id,
+									username : currentVO.username.trim(),
+									//password : currentVO.password().trim(),
+									role : currentVO.role.trim(),
+									userType : currentVO.userType.trim()
+								};
+								$.usermanage.update({
+									username : params.username + '?action=resetpassword'
+								}, params, function(data) {
+									console.log(data)
+									if (!data.exception) {
+										self.roleTable.refreshData();
+										alert("重置成功。新密码为："+data.newPassword+"。<br/>注：新密码10分钟内有效，超过10分钟后用户未登录需要再次重置密码。");
+									}
+
+								});
+							}
+						})	
+					}
+
+					this.searchParam = ko.observable({
+						username : "",
+						role : "",
+						userType : ""
+					})
+					this.search = function() {
+						self.roleTable.params(self.searchParam());
+					}
+					//重置
+					this.reset = function(){
+						self.searchParam({
+							username : "",
+							role : "",
+							userType : ""
+						})
+						self.roleTable.params(self.searchParam());
+					}
+					//this.roleTable = projectGroupTempData;
+					this.roleTable = new DataTable({
+						perPage : 10,
+						path : './webapi/user',
+						loader : function(result) {
+							result.name_ = csc.util.trimName(result.name, 16);
+							result.description_ = csc.util.trimName(
+								result.description, 21);
+							return result;
+						}
+					});
+				}
+
+				ko.applyBindings(new viewModel(), $('#page-content')[0]);
+
+			});
+		</script>

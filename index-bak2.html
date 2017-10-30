@@ -1,0 +1,748 @@
+﻿<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+    <title>WinGrow</title>
+    <link rel="icon" href="csc/favicon.ico" type="image/x-icon" />
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1' name='viewport'>
+    <link href='assets/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+    <link href='assets/css/animate.min.css' rel='stylesheet' type='text/css'>
+    <link href='assets/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+    <link href='assets/css/simple-line-icons.css' rel='stylesheet' type='text/css'>
+    <link href="assets/lib/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href='assets/css/font.css' rel='stylesheet' type='text/css'>
+    <link href='assets/css/angulr.css' rel='stylesheet' type='text/css'>
+    <link href='assets/css/knockout-datatable.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" media="all" href="assets/css/app.css" />
+    <!--[if IE 9]>
+    <link href="assets/css/ie9.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    
+    <!-- 解决接口跨域的问题 -->
+    <script src="api/v5.0.0/uap/register"></script>
+    <!-- 解决调用servlet跨域问题 -->
+    <!--<script src="api/file/uploadServlet"></script> -->
+    <script src="api/userStrategyServlet"></script>
+    <script src="api/logoutServlet"></script>
+    <!--<script src="api/license/licServlet"></script> -->
+  </head>
+    
+  
+  <body>
+    <div class='app app-header-fixed app-aside-fixed'>
+      <header class='app-header navbar' id='header' role='menu'>
+        <div class='navbar-header bg-dark'>
+          <a class='btn btn-default pull-right visible-xs dk' target='.navbar-collapse' ui-toggle='show'>
+            <i class='glyphicon glyphicon-cog'></i>
+          </a>
+          <a class='btn btn-default pull-right visible-xs' target='.app-aside' ui-scroll='app' ui-toggle='off-screen'>
+            <i class='glyphicon glyphicon-align-justify'></i>
+          </a>
+          <a class='navbar-brand text-lt' href='#/'>
+            <span><img alt='.' src='assets/img/wingrow-logo.png' style="height: 25px;margin-top:8px"></span>
+            <!-- <span class='hidden-folded m-l-xs' style="margin-left:20px;">WinGrow</span> -->
+          </a>
+        </div>
+        <div class='collapse pos-rlt navbar-collapse box-shadow bg-white-only'>
+          <div class='nav navbar-nav hidden-xs'>
+            <a class='btn no-shadow navbar-btn' href='#' target='.app' ui-toggle='app-aside-folded'>
+              <i class='fa fa-dedent fa-fw text'></i>
+              <i class='fa fa-indent fa-fw text-active'></i>
+            </a>
+          </div><!-- data-bind="if: licenseVO().soft_version =='diamond'" -->
+          
+          <ul class='nav navbar-nav navbar-right'>
+            <li >
+              <a data-bind="attr:{href: uapUrl}">
+                <i class='fa fa-desktop'></i> 统一认证平台
+                <span class=' up bg-info'></span></a>
+            </li>
+            <li class='dropdown'>
+              <a class='dropdown-toggle clear' data-toggle='dropdown' data-bind="click:loadUserInfo">
+                <i class='fa fa-user'></i>
+                <span class='hidden-sm hidden-md' data-bind="text:$root.user().account"></span>
+                <b class='caret'></b>
+              </a>
+              <ul class='dropdown-menu animated fadeInRight w-lg bg-light'>
+                <li>
+                    <table class="table text-xs">
+                        <tbody data-bind="with:user">
+                            <tr data-bind="visible: userType()=='0'">
+                                <td><a href="#" onclick="showModal('pages/systems/users/edit_profile.html')" class="btn btn-info btn-xs">修改信息</a></td>
+                                <td><a href="#" onclick="showModal('pages/systems/users/edit_password.html')" class="btn btn-primary btn-xs">修改密码</a></td>
+                            </tr>
+                            <tr>
+                                <td>账号</td>
+                                <td data-bind="text:account_,attr:{title:account}"></td>
+                            </tr>
+                            <tr>
+                                <td>昵称</td>
+                                <td data-bind="text:name_,attr:{title:name}"></td>
+                            </tr>
+                            <tr>
+                                <td>角色</td>
+                                <td data-bind="text:roleName_,attr:{title:$root.roleVO().currentRole()}"></td>
+                            </tr>
+                            <tr>
+                                <td>组织</td>
+                                <td data-bind="text:organizationName_,attr:{title:organizationName()}"></td>
+                            </tr>
+                            <tr>
+                                <td>手机</td>
+                                <td data-bind="text:mobile_,attr:{title:mobile}"></td>
+                            </tr>
+                            <tr>
+                                <td>邮箱</td>
+                                <td data-bind="text:email_,attr:{title:email}"></td>
+                            </tr>
+                        </tbody>
+                    </table>                
+                </li>
+                <li class='divider'></li>
+                <li>
+                  <div class="padder"><a href="javascript:loginout();" class="btn btn-danger btn-xs"><i class='fa fa-power-off'></i> 退出系统</a></div></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </header>
+      
+      <aside class='app-aside hidden-xs bg-dark' id='aside'>
+        
+        <div class='aside-wrap'>
+          <div class='navi-wrap'>
+            <nav class='navi clearfix' ui-nav=''>
+             
+              <ul class='nav navbox'>
+                <li>
+                  <a data-url="pages/welcome/index" href="#pages/welcome/index">
+                  <i class="icon home"></i>
+                    <span class='text-base'>首页</span></a>
+                </li>
+                <li>
+                  <a data-url="pages/projectGroup/index" href="#pages/projectGroup/index">
+                  <i class="icon home"></i>
+                    <span class='text-base'>项目组</span></a>
+                </li>
+                <li>
+                  <a data-url="pages/project/index" data-url-sec="pages/project/new" data-url-thr="pages/project/edit" href="#pages/project/index">
+                  <i class="icon home"></i>
+                    <span class='text-base'>项目</span></a>
+                </li>
+                <li>
+                  <a data-url="pages/registry/index" href="#pages/registry/index">
+                  <i class="icon home"></i>
+                    <span class='text-base'>仓库</span></a>
+                </li>
+                
+                <li>
+                  <a class='auto'>
+                    <span class='pull-right text-muted'>
+                      <i class='fa fa-fw fa-angle-right text'></i>
+                      <i class='fa fa-fw fa-angle-down text-active'></i>
+                    </span>
+                    <i class="icon service"></i>
+                    <span class='text-base'>系统</span></a>
+                  <ul class='nav nav-sub dk'>
+                    <li class='nav-sub-header'>
+                      <a>
+                        <span class='text-base'>系统</span></a>
+                    </li>
+                    <li>
+                      <a data-url="pages/systems/users/index" href="#pages/systems/users/index">
+                        <span class='text-base'>用户管理</span>
+                      </a>
+                    </li>
+                    <li >
+                      <a data-url="pages/systems/roles/index" href="#pages/systems/roles/index">
+                        <span class='text-base'>角色管理</span>
+                      </a>
+                    </li>
+                    <li >
+                      <a data-url="pages/configManger/index" href="#pages/configManger/index">
+                        <span class='text-base'>配置管理</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                
+              </ul>
+             
+            </nav>
+          </div>
+        </div>
+        
+      </aside>
+      
+      <div class='app-content' id='content' role='main'>
+        <div class='app-content-body page-content-area' data-ajax-content="true">
+          
+        </div>
+      </div>
+      <footer class='app-footer' id='footer' role='footer'>
+        <div class='wrapper b-t bg-light'>
+          <span class='pull-right'>5.0.0
+            <a class='m-l-sm text-muted' href='#' ui-scroll='app'>
+              <i class='fa fa-long-arrow-up'></i></a>
+          </span>&copy; 版权所有 2016 航天云宏技术有限公司</div>
+      </footer>
+    </div>
+
+    <div class="modal fade modal-draggable" id="ajax_modal_0" tabindex="-1" role="dialog"></div>
+    <div class="modal fade modal-draggable" id="ajax_modal_1" tabindex="-1" role="dialog"></div>
+    <div class="modal fade modal-draggable" id="ajax_modal_2" tabindex="-1" role="dialog"></div>
+  
+    <script src='assets/js/jquery.min.js'></script>
+
+    <script src="assets/js/underscore.js"></script>
+    <script src="assets/js/backbone.js"></script>
+
+    <script src="assets/js/knockout.js"></script>
+    <script src="assets/js/knockout.bootstrap.modal.js"></script>
+    <script src="assets/js/knockout-datatable.js"></script>
+    <script src="assets/js/knockout.validation.js"></script>
+
+    <script src='assets/js/bootstrap.min.js'></script>
+    <script src="assets/js/jquery-drag.js"></script>
+
+    <script src='assets/js/ui-load.js'></script>
+    <script src='assets/js/ui-jp.config.js'></script>
+    <script src='assets/js/ui-jp.js'></script>
+    <script src='assets/js/ui-nav.js'></script>
+    <script src='assets/js/ui-toggle.js'></script>
+
+    <script src="assets/js/ace.js"></script>
+    <script src="assets/js/ace.ajax-content.js"></script>
+    <script src="assets/js/app.ajax-content.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/request.js"></script>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/api_test.js"></script>
+
+    <script src='assets/js/ajax-pushlet-client.js'></script>
+    <script src='assets/js/ajaxfileupload.js'></script>
+    <script src='assets/js/common.js'></script>
+    <script src='assets/lib/moment/moment.js'></script>
+    <script src='assets/lib/bootstrap-daterangepicker/daterangepicker.js'></script>
+    <!-- <script src="api/img/uploadPreview.js"></script> -->
+    <!-- <script src="api/systems/license/license.js"></script> -->
+    <script>
+$(".dropdown-toggle").click(function(){
+  $("#ace-settings-box").removeClass('open');
+});
+var cutOverList = [];//批量纳管公共变量
+    /* PL.webRoot = "";
+      PL._init();
+      PL.joinListen('/source/event');//事件标识 在数据源中引用 
+      function onPlushletError(event){//网络连接断开时 重新注册
+          console.log("onPlushletError...")
+           setTimeout(function(){
+              PL._init();
+              PL.joinListen('/source/event');//事件标识 在数据源中引用 
+           }, 3000);
+      }
+      
+      function onPushLetData(event) {
+        console.log(event)
+      } */
+      
+      function ViewModel(){
+        var self = this;
+
+        this.setUrl = function() {
+          var url = window.location.href;
+          var vals = url.split(";jsessionid=");
+          if (vals.length > 1) {
+            var newUrl = "";
+            if (vals[1].indexOf("#") > 0) {
+              newUrl = vals[1].substring(vals[1].indexOf("#"), vals[1].length);
+            }
+            window.location.href = vals[0] + newUrl;
+          }
+        }
+        //截取浏览器地址
+        this.setUrl();
+        
+        this.uapUrl = ko.observable();
+        this.getUapUrl = function(){
+          csc.rest.get("api/v5.0.0/homepage/uapUrl", function(data){
+            self.uapUrl(data+"/index.html#/app/home");
+          });
+        }
+        this.getUapUrl();
+        
+        this.fetchActionsForCheck = function(role){
+          csc.rest.get("api/v5.0.0/roles/currentRole/getCurrUserPrivMenuToList?role="+encodeURIComponent(role), function(data){
+            ko.actionsMap(data && data.currentPriv || []);
+            
+            /*
+            fetchActionCallbackList = {
+                "pagename1": callback1,
+                "pagename2": callback2
+            }
+            */
+            if(window.fetchActionCallbackObject){
+              for(var key in window.fetchActionCallbackObject){
+                window.fetchActionCallbackObject[key]();
+              }
+            }
+            /* setTimeout(function(){
+                ko.actionsMap = ["action1", "action2"]
+              }, 2000) */
+              /* $.LICENSE.queryLicense(function(data) { 
+              self.licenseVO().IcType(data.wci.IcType);
+              if(data.wci.IcType !="official" ){
+                  var warnInfo = "当前为试用版，剩余试用天数为："+data.remianDays+"天！"
+                  self.licenseVO().warnInfo(warnInfo);
+              }
+              if(data.wci.IcType !="official" && data.wci.soft_version_Num < data.winserver_useedCount){
+                var warnInfo = "License已使用许可证已超过允许数量，请申请许可证！"
+                  self.licenseVO().warnInfo(warnInfo);
+              }
+              if(data.wci.IcType =="official" && data.wci.soft_version_Num < data.winserver_useedCount){
+                var warnInfo = "License已使用许可证已超过申请数量，请重新申请许可证！"
+                  self.licenseVO().warnInfo(warnInfo);
+              }
+              var licList = [];
+              if(data.wci.IcType != 'official'){
+                licList.push('diamond');
+              }else{
+                  licList.push(data.wci.soft_version);
+              }
+              ko.LicenseMap(licList);
+              
+              //刷新菜单
+              var hash = window.location.hash;
+              hash = hash.replace(/^(\#\!)?\#/, '');
+              refreshMenuActive(hash);
+            }); */
+          });
+        }
+        this.roleVO = ko.observable({
+          roleName: ko.observableArray([]),
+          currentRole: ko.observable(),
+          roleFlag: ko.observable(),
+          platForm: ko.observable()
+        });
+        this.licenseVO = ko.observable({
+          warnInfo: ko.observable(),
+          IcType: ko.observable()
+        });
+        
+        this.loadRoles = function(){
+          csc.rest.get("api/v5.0.0/homepage/roles", function(data){
+            self.roleVO().roleName(data.roles);
+            var currentRole = data.currentRole==''?data.roles[0].name:data.currentRole;
+            self.roleVO().currentRole(currentRole);
+            
+            //查看当前角色是否具有自助门户权限
+            csc.rest.get("api/v5.0.0/homepage/gateway/"+encodeURIComponent(currentRole), function(data){
+              self.roleVO().platForm(data);
+              var putBody = {
+                roleName: currentRole,
+                platform: self.roleVO().platForm()
+                  }
+              csc.rest.post("api/v5.0.0/homepage/role", putBody,function(data){
+                //self.loadAlarmStat();
+                //self.loadNoticeStat();
+                self.loadUserInfo();
+                if(window.location.hash=="#pages/welcome/home"){
+                  window.location.hash = '#pages/welcome/index';
+                }
+                
+              });
+            });
+            if((currentRole == "系统管理员") || (currentRole == "运营管理员") || (currentRole == "运维管理员")){
+              self.roleVO().roleFlag("ALL")
+            }else if(currentRole == "VDC管理员"){
+              self.roleVO().roleFlag("VDC");
+            }else if(currentRole == "安全管理员"){
+              self.roleVO().roleFlag("AG");
+            }else if(currentRole == "安全审计员"){
+              self.roleVO().roleFlag("AS");
+            }else{
+              self.roleVO().roleFlag("COMMON");
+            }
+            
+            self.fetchActionsForCheck(currentRole);//加载角色权限,在后台判断运营门户还是自助门户
+            });
+          
+        }
+        self.roleVO().roleFlag("ALL");
+        this.loadRoles();
+        this.selectRole = function(role){
+          //查看当前角色是否具有自助门户权限
+          csc.rest.getSync("api/v5.0.0/homepage/gateway/"+encodeURIComponent(role), function(data){
+            
+            self.roleVO().platForm(data);
+            var putBody = {
+              roleName: role,
+              platform: self.roleVO().platForm()
+                }
+            csc.rest.post("api/v5.0.0/homepage/role", putBody,function(data){
+            //  self.loadAlarmStat();
+            //  self.loadNoticeStat();
+            }); 
+          });
+          
+          self.roleVO().currentRole(role);
+          if(role == "系统管理员"){
+            self.roleVO().roleFlag("ALL")
+            window.location.hash = '#pages/welcome/index?role=sys';
+          }else if(role == "运营管理员"){
+            self.roleVO().roleFlag("ALL")
+            window.location.hash = '#pages/welcome/index?role=yy';
+          }else if(role == "运维管理员"){
+            self.roleVO().roleFlag("ALL")
+            window.location.hash = '#pages/welcome/index?role=yw';
+          }else if(role == "VDC管理员"){
+            self.roleVO().roleFlag("VDC");
+            window.location.hash = '#pages/welcome/index?role=vdc';
+          }else if(role == "安全管理员"){
+            self.roleVO().roleFlag("AG");
+            window.location.hash = '#pages/systems/roles/index';
+          }else if(role == "安全审计员"){
+            self.roleVO().roleFlag("AS");
+            window.location.hash = '#pages/systems/operLog/index';
+          }else if(role == "普通用户"){
+            self.roleVO().roleFlag("COMMON");
+            window.location.hash = '#pages/welcome/index?role=com';
+          }else{
+            self.roleVO().roleFlag("COMMON");
+            window.location.hash = '#pages/welcome/index?role=other';
+          }
+          self.fetchActionsForCheck(role);//加载角色权限
+        }
+        
+        this.alarmStatVO = ko.observable({
+          systemAlarm: ko.observable(),
+          vdcQuotaAlarm: ko.observable(),
+          vmAlarm: ko.observable(),
+          totalAlarm: ko.observable()
+        });
+     /*    this.loadAlarmStat = function(){
+          csc.rest.get("api/v5.0.0/homepage/alarmStat", function(data){
+            self.alarmStatVO().systemAlarm(data.systemAlarm);
+            self.alarmStatVO().vdcQuotaAlarm(data.vdcQuotaAlarm);
+            self.alarmStatVO().vmAlarm(data.vmAlarm);
+            self.alarmStatVO().totalAlarm(data.systemAlarm+data.vdcQuotaAlarm+data.vmAlarm);
+            });
+        }
+         */
+    /*     this.noticeStatVO = ko.observable();
+        this.loadNoticeStat = function(){
+        csc.rest.get("api/v5.0.0/homepage/notice?state=NoRealize", function(data){
+          var num = 0;
+          if(data.results && !isNaN(data.results.length)){
+            num = data.results.length;
+          }
+          self.noticeStatVO(num);
+        });
+        }
+         */
+        /* ------------------ 用户信息模块  ---------------start */
+      var cscUser = function() {
+        this.account = ko.observable("");
+        this.account_ = ko.observable("");
+        this.name = ko.observable("").extend({required: true,userNameSpecial:true});
+        this.name_ = ko.observable("");
+        this.mobile = ko.observable("").extend({userPhone:true});
+        this.mobile_ = ko.observable("");
+        this.email = ko.observable("").extend({email:{params:true,message:"请填写正确格式的邮箱，格式如example@email.com"}});
+        this.email_ = ko.observable("");
+        this.status = ko.observable("");
+        this.roleName = ko.observable("");
+        this.roleName_ = ko.observable("");
+        this.organizationName = ko.observable("");
+        this.organizationName_ = ko.observable("");
+        this.userType = ko.observable("");
+        this.flag = ko.observable("");
+      }
+        
+      this.user = ko.validatedObservable(new cscUser());
+      this.editUser = ko.validatedObservable(new cscUser());
+      
+      //加载次数
+      this.loadUserInfoCount = 0;
+      //加载用户信息
+      this.loadUserInfo = function(){
+        csc.rest.get("api/v5.0.0/homepage/user", function(data){
+          var loadedFlag = false;
+          for(var attr in data){
+            loadedFlag = true;
+            break;
+          }
+          if(loadedFlag){
+            //还原加载次数
+            self.loadUserInfoCount = 0;
+            self.user.fromJSON(data);
+            
+            var flag = self.user().flag();
+            if(flag=='false'){
+              //查询用户失败              
+              var obj = {};
+              obj.name = '';
+              obj.mobile = '';
+              obj.email = '';
+              
+              self.user.fromJSON(obj);
+              self.user().organizationName('');
+              self.roleVO().currentRole('');
+            }else{
+              var organizationName = self.user().organizationName();
+              if(organizationName==''){
+                self.user().organizationName('本地组织');
+                self.user().organizationName_('本地组织');
+              } else {
+                var organizationName_ = organizationName;
+                if(csc.util.isNotNull(organizationName_) && organizationName_.length>11){
+                  organizationName_ = organizationName_.substring(0,11)+"...";
+                }
+                self.user().organizationName_(organizationName_);
+              }
+              
+              self.editUser.fromJSON(data);
+              
+              var account_ = self.user().account();
+              if(csc.util.isNotNull(account_) && account_.length>11){
+                account_ = account_.substring(0,11)+"...";
+              }
+              self.user().account_(account_);
+              
+              var name_ = self.user().name();
+              if(csc.util.isNotNull(name_) && name_.length>11){
+                name_ = name_.substring(0,11)+"...";
+              }
+              self.user().name_(name_);
+              
+              var roleName_ = self.roleVO().currentRole();
+              if(csc.util.isNotNull(roleName_) && roleName_.length>11){
+                roleName_ = roleName_.substring(0,11)+"...";
+              }
+              self.user().roleName_(roleName_);
+              
+              var phone_ = self.user().mobile();
+              if(csc.util.isNotNull(phone_) && phone_.length>11){
+                phone_ = phone_.substring(0,11)+"...";
+              }
+              self.user().mobile_(phone_);
+              
+              var email_ = self.user().email();
+              if(csc.util.isNotNull(email_) && email_.length>11){
+                email_ = email_.substring(0,11)+"...";
+              }
+              self.user().email_(email_);
+            }
+          } else {
+            if(self.loadUserInfoCount < 3){
+              self.loadUserInfoCount++;
+              self.loadUserInfo();
+            }
+          }
+          
+        },function(err){
+
+        });
+      }
+      
+      //修改用户信息
+      this.editAction = function(){
+        ko.validation.group(self.editUser).showAllMessages();
+            if(self.editUser.isValid()){
+              $("#userInfoSubmitBtn").attr("disabled","disabled");
+          csc.rest.post("api/v5.0.0/homepage/user",self.editUser.toJSON() ,function(data){
+            if("success" == data.result){
+              hideModal();
+              systemMsg.alert("修改用户信息成功！");
+              self.user.fromJSON(self.editUser.toJSON());
+            }else if("fail" == data.result){
+              systemMsg.alert("修改失败！");
+              self.editUser.fromJSON(self.user.toJSON());
+            }else{
+              systemMsg.alert(data.result);
+            }
+            setTimeout(function(){$("#userInfoSubmitBtn").removeAttr("disabled")},500);
+          });
+            }
+      }
+      //不同用户状态，使用不同颜色显示
+        this.userStatusCss = function(status){
+        switch(status){
+          case '1':
+            return "bg-success";
+          default :
+            return "bg-danger";
+        }
+      };
+      //点击取消，隐藏对话框后，初始化表单值
+      this.editCancel = function(){
+        self.editUser.fromJSON(self.user.toJSON());
+        hideModal();
+      }
+      
+      //使用逗号分隔显示多个角色
+      this.showRoles = function(roles){
+        var rolesText = "";
+        for(var i=0; i<roles().length; i++){
+          var role = roles()[i];
+          if(rolesText){
+            rolesText += ",";
+          }
+          rolesText += role.name;
+        }
+        return rolesText;
+      }
+      
+        /* ------------------ 用户信息模块  ---------------end */
+        
+          /* ------------------ 修改用户密码模块  ---------------start */
+      var userPassword = function() {
+          _upSelf = this;
+        this.oldPassword = ko.observable("").extend({required: {params:true,message:"请输入旧密码"}});
+        this.password = ko.observable("").extend({required: {params:true,message:"请输入密码"},minLength:{params:6,message:"请至少输入6个字符"}});
+        this.passwordRepeat = ko.observable("").extend({required: true,equal:{params:_upSelf.password,message:"必须输入一致的密码！"}});
+      }
+      this.userPasswordObj = ko.validatedObservable(new userPassword());
+      
+      this.userPasswordObj.fromJSON({
+        oldPassword:"",
+        password:"",
+        passwordRepeat:""
+      });
+      
+      //修改用户密码
+      this.editPasswordAction = function(){
+        ko.validation.group(self.userPasswordObj).showAllMessages();
+            if(self.userPasswordObj.isValid()){
+              $("#passwordSubmitBtn").attr("disabled","disabled");
+          csc.rest.post("api/v5.0.0/homepage/user/password",self.userPasswordObj.toJSON() ,function(data){
+            if("success" == data.result){
+              hideModal();
+              systemMsg.alert("修改用户密码成功！");
+            }else if("fail" == data.result){
+              systemMsg.alert("修改用户密码失败！");
+            }else{
+              systemMsg.alert(data.result);
+            }
+            self.userPasswordObj(new userPassword());
+            setTimeout(function(){$("#passwordSubmitBtn").removeAttr("disabled")},500);
+          });
+            }
+      }
+      
+      //点击取消，隐藏对话框后，初始化表单值
+      this.editPasswordCancel = function(){
+        self.userPasswordObj(new userPassword());
+        hideModal();
+      }
+        /* ------------------ 修改用户密码模块  ---------------end */
+        
+        /* ------------------ 购物车 -------------------------start */
+       // this.cartNum = ko.observable("");
+      /*   this.loadCartNum = function(){
+          csc.rest.get("api/v5.0.0/homepage/cart",function(data){
+            self.cartNum(data);
+        },null,{},true);
+        }
+        this.loadCartNum(); */
+        /* ------------------ 购物车 -------------------------end */
+      }
+      
+      //其他模块需使用viewModel变量，声明为全局变量
+      var frameViewModel;
+      $(function(){
+        frameViewModel = new ViewModel();
+        window.__indexModel = frameViewModel;
+        
+        ko.bindingHandlers.domRender = { // 欧航，dom对象生成的监听事件绑定
+              init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+                valueAccessor().call(bindingContext['$data'], element, bindingContext['$row']);
+              },
+              update: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+              }
+          };
+        
+        ko.applyBindings(frameViewModel,$('.app-header')[0]);
+        ko.applyBindings(frameViewModel,$('.app-aside')[0]);
+      })
+      
+      function loginout() {
+         confirm("确定退出当前登录？",function(arg){
+           var cookie = document.cookie;
+          //cookie是个字符串型的  判断其长度
+          if(cookie.length != 0 ){
+            csc.rest.post("api/logoutServlet", {}, function(data){
+                    window.location.href = data;
+                });
+            //
+          } else {
+            location.reload();
+          }
+         });
+        
+      }
+      //License策略，定时器
+      //如果不满足条件，则直接跳转到申请License界面
+    /*  function checkLicense() {
+        var postBody = {};
+      csc.rest.post('api/license/licServlet?action=query',postBody, function(data, textStatus) {
+              if(data.wci.soft_version_Num < data.winserver_useedCount){
+                if(window.location.hash!='#pages/systems/licenses/index'){
+                  window.location.hash = '#pages/systems/licenses/index';
+                }
+              } 
+              if(data.wci.IcType != "official"  && data.remianDays == 0){
+                if(window.location.hash!='#pages/systems/licenses/index'){
+                  window.location.hash = '#pages/systems/licenses/index';
+                }
+              }
+              if(csc.util.isNotNull(data.exception)){
+                if(window.location.hash!='#pages/systems/licenses/index'){
+                  window.location.hash = '#pages/systems/licenses/index';
+                }
+              }else{
+                
+              }
+          },null,false,{},true);
+      } */
+      //checkLicense();
+      //每5秒校验一下License信息
+      //setInterval(checkLicense, 1000*5);
+      
+      //登录的策略，定时器
+      setInterval(chat, "30000");
+      function chat() { 
+            $.ajax({ 
+               //headers: {'Cookie' : document.cookie }, 
+               url : "api/userStrategyServlet", 
+               type : 'POST', 
+               dataType : "json", 
+               data : JSON.stringify(content), 
+               contentType : 'application/json; charset=utf-8', 
+               error : function(XMLHttpRequest, textStatus, errorThrown) { 
+                    try { 
+                       var resText = XMLHttpRequest.responseText 
+                       res = JSON.parse(resText); 
+                       alert("["+res.exceptionCode+"]"+res.exceptionMessage); 
+                    } catch (e) { 
+                    } 
+               }, 
+               success : function(data, textStatus) { 
+                  if (data != null && data != "") { 
+                           window.location.href = data; 
+                        } 
+               }, 
+               timeout:60000 
+            }); 
+         }
+      <!-- 解决流程页面的跨域的问题 -->
+     /* $.get('pages/welcome/home.html',function(data){});*/
+     /* $.get('diagram-viewer/index.html',function(data){});*/
+      /*$.get('modeler.html',function(data){});*/
+      //$.get('pages/systems/workflows/workflow_edit_index.html',function(data){});
+     /* $.get('editor-app/editor.html',function(data){});*/
+    </script>
+  </body>
+
+</html>

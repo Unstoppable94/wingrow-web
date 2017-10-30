@@ -1,0 +1,258 @@
+<style>
+  .b-blue{
+    border-color:transparent;
+  }
+  .nav-tabs-alt .nav-tabs > li.active > a, .nav-tabs-alt .nav-tabs > li.active > a:focus, .nav-tabs-alt .nav-tabs > li.active > a:hover{
+    border-top-color:#4ba268;
+    border-right:1px solid #cfdadd;
+  }
+  .nav-tabs-alt .nav-tabs > li > a{
+    border-right:1px solid #cfdadd;
+  }
+</style>
+<div class="bg-light lter b-b wrapper-sm">
+  <ol class="breadcrumb">
+    <li>当前位置：</li>
+    <li class="active">配置管理</li>
+  </ol>
+</div>
+<div class='wrapper-md'>
+  <div class="nav-tabs-alt bg-white-only b b-blue">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+        <a  aria-controls="configManger_tab1"  data-toggle="tab" href="#configManger_tab1" role="tab">Sonar配置</a>
+      </li>
+      <li role="presentation">
+        <a  aria-controls="configManger_tab2" data-toggle="tab" href="#configManger_tab2" role="tab">仓库镜像</a>
+      </li>
+      <li role="presentation">
+        <a  aria-controls="configManger_tab3" data-toggle="tab" href="#configManger_tab3" role="tab">Rancher配置</a>
+      </li>
+      <li role="presentation">
+        <a  aria-controls="configManger_tab4" data-toggle="tab" href="#configManger_tab4" role="tab">SMTP配置</a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="configManger_tab1" role="tabpanel">
+        <p> </p>
+        <div class="form-horizontal" data-bind="with:sonarVO">
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>Sonar地址</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control" data-bind="value:sonarUrl"  />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>用户名</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control" data-bind="value:user"  />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>密码</label>
+            <div class="col-sm-5">
+              <input type="password" class="form-control" data-bind="value:password"  />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"></label>
+            <div class="col-sm-5">
+              <button class="btn btn-default">连接测试</button>
+              <button class="btn btn-success" data-bind="click:$root.submitSonar">保存</button>
+            </div>
+          </div>
+        </div>
+        <p> </p>
+      </div>
+      <div class="tab-pane" id="configManger_tab2" role="tabpanel">
+        <p> </p>
+        <div class="form-horizontal" data-bind="with:mirrorVO">
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>镜像地址</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control" data-bind="value:url"  />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label">是否安全连接</label>
+            <div class="col-sm-5">
+              <input type="checkbox" data-bind="checked:scure"  />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"></label>
+            <div class="col-sm-5">
+              <button class="btn btn-primary">连接测试</button>
+              <button class="btn btn-success" data-bind="click:$root.submitMirror">保存</button>
+            </div>
+          </div>
+        </div>
+        <p> </p>
+      </div>
+      <div class="tab-pane" id="configManger_tab3" role="tabpanel">
+        <p> </p>
+        <div class="form-horizontal" data-bind="with:rancherVO">
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>地址</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control" data-bind="value:serverUrl" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>Access key</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control"  data-bind="value:accessKey" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>Secure key</label>
+            <div class="col-sm-5">
+              <input type="password" class="form-control nolengthlimit" data-bind="value:secureKey" />
+            </div>
+          </div>
+           <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>环境编码</label>
+            <div class="col-sm-5">
+              <input type="password" class="form-control" data-bind="value:envID" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"></label>
+            <div class="col-sm-5">
+              <button class="btn btn-primary">连接测试</button>
+              <button class="btn btn-success" data-bind="click:$root.submitRancher">保存</button>
+            </div>
+          </div>
+        </div>
+        <p> </p>
+      </div>
+      <div class="tab-pane" id="configManger_tab4" role="tabpanel">
+        <p> </p>
+        <div class="form-horizontal" data-bind="with:smtpVO">
+          
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>服务器地址</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control" data-bind="value:host" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>用户</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control"  data-bind="value:user" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>密码</label>
+            <div class="col-sm-5">
+              <input type="password" class="form-control" data-bind="value:password" />
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>端口</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control" data-bind="value:port" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>SSL</label>
+            <div class="col-sm-5">
+              <input type="checkbox" data-bind="checked:ssl" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label  class="col-sm-2 control-label"></label>
+            <div class="col-sm-5">
+              <button class="btn btn-primary">连接测试</button>
+              <button class="btn btn-success" data-bind="click:$root.submitSmtp">保存</button>
+            </div>
+          </div>
+        </div>
+        <p> </p>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  var scripts = [null,'api/MISC/MISC.js'];
+  $('.page-content-area').ace_ajax('loadScripts', scripts, function(query) {
+    function viewModel() {
+      var self = this;
+      this.sonarVO = ko.observable({
+        "sonarUrl":ko.observable(''),
+        "user":ko.observable(''),
+        "password":ko.observable('')
+      });
+      this.mirrorVO = ko.observable({
+        "url":ko.observable(''),
+        "scure":ko.observable('')
+      });
+      this.rancherVO = ko.observable({
+        "serverUrl": ko.observable(''),
+        "accessKey": ko.observable(''),
+        "secureKey": ko.observable(''),
+        "envID": ko.observable('')
+      });
+      this.smtpVO = ko.observable({
+        "ssl": ko.observable(''),
+        "port":ko.observable(''),
+        "host": ko.observable(''),
+        "user": ko.observable(''),
+        "password": ko.observable('')
+      });
+
+      $.MISC.sonar.query(null,function(data){
+        if(!data.exception)
+          self.sonarVO(data)
+      })
+      $.MISC.mirror.query(null,function(data){
+        if(!data.exception)
+          self.mirrorVO(data)
+      })
+      $.MISC.rancher.query(null,function(data){
+        if(!data.exception)
+          self.rancherVO(data)
+      })
+      $.MISC.smtp.query(null,function(data){
+        if(!data.exception)
+          self.smtpVO(data)
+      })
+
+      this.submitSonar = function(){
+        $.MISC.sonar.update(self.sonarVO(),function(){
+          alert("修改成功！");
+        },function(){
+          alert("修改失败！");
+        })
+      }
+
+      this.submitMirror = function(){
+        $.MISC.mirror.update(self.mirrorVO(),function(){
+          alert("修改成功！");
+        },function(){
+          alert("修改失败！");
+        })
+      }
+
+      this.submitRancher = function(){
+        $.MISC.rancher.update(self.rancherVO(),function(){
+          alert("修改成功！");
+        },function(){
+          alert("修改失败！");
+        })
+      }
+
+      this.submitSmtp = function(){
+        $.MISC.smtp.update(self.smtpVO(),function(){
+          alert("修改成功！");
+        },function(){
+          alert("修改失败！");
+        })
+      }
+
+    }
+    ko.applyBindings(new viewModel(), $('#page-content')[0]);
+  })
+</script>

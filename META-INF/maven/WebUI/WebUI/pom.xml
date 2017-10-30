@@ -1,0 +1,430 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>WebUI</groupId>
+	<artifactId>WebUI</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<properties>
+		<tycho-version>0.18.1</tycho-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jersey.version>2.25.1</jersey.version>
+		<maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+ 	</properties>
+
+	<build>
+
+		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>src</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<warSourceDirectory>WebContent</warSourceDirectory>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<!-- <repositories> <repository> <id>mars</id> <layout>p2</layout> <url>http://10.0.0.54:8081/nexus/content/repositories/mars2-release</url> 
+		</repository> <repository> <id>local</id> <url>file:///Users/xiehuiqiang/.m2/repository</url> 
+		</repository> </repositories> -->
+	<repositories>
+
+		<repository>
+			<id>mars</id>
+			<layout>p2</layout>
+			<url>http://10.0.0.54:8081/nexus/content/repositories/mars2-release</url>
+		</repository>
+
+
+
+
+	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.glassfish.jersey</groupId>
+				<artifactId>jersey-bom</artifactId>
+				<version>${jersey.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet-core</artifactId>
+			<!-- use the following artifactId if you don't need servlet 2.x compatibility -->
+			<!-- artifactId>jersey-container-servlet</artifactId -->
+		</dependency>
+		<!-- uncomment this to get JSON support <dependency> <groupId>org.glassfish.jersey.media</groupId> 
+			<artifactId>jersey-media-moxy</artifactId> </dependency> -->
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jgit</groupId>
+			<artifactId>org.eclipse.jgit</artifactId>
+			<version>3.5.0.201409260305-r</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.spotify</groupId>
+			<artifactId>docker-client</artifactId>
+			<version>8.2.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<version>2.2.1.GA</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>2.2.1.GA</version>
+		</dependency>
+		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-log4j12</artifactId> 
+			<version>1.7.25</version> </dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
+		<!-- https://mvnrepository.com/artifact/com.google.auto.value/auto-value -->
+		<dependency>
+			<groupId>com.google.auto.value</groupId>
+			<artifactId>auto-value</artifactId>
+			<version>1.3</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.ryanharter.auto.value/auto-value-parcel -->
+		<dependency>
+			<groupId>com.ryanharter.auto.value</groupId>
+			<artifactId>auto-value-parcel</artifactId>
+			<version>0.2.5</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.rometools/rome -->
+		<dependency>
+			<groupId>com.rometools</groupId>
+			<artifactId>rome</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>Winhong</groupId>
+			<artifactId>cicdcore</artifactId>
+			<version>1.0-SNAPSHOT</version>
+<!-- <scope>provided</scope> -->			
+ 		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.7.7</version>
+			
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+    <version>1.2.3</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.eclipse.core/org.eclipse.core.runtime -->
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>org.eclipse.core.runtime</artifactId>
+			<version>3.7.0</version>
+		</dependency>
+
+ 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- <dependency> <groupId>com.huadi.dmp</groupId> <artifactId>org.restlet</artifactId> 
+			<version>1.1.0</version> </dependency> <dependency> <groupId>com.huadi.dmp</groupId> 
+			<artifactId>com.noelios.restlet</artifactId> <version>1.1.0</version> </dependency> 
+			<dependency> <groupId>com.huadi.dmp</groupId> <artifactId>com.noelios.restlet.ext.servlet</artifactId> 
+			<version>1.1.0</version> </dependency> <dependency> <groupId>com.huadi.dmp</groupId> 
+			<artifactId>org.restlet.ext.jaxrs</artifactId> <version>1.1.0</version> </dependency> 
+			<dependency> <groupId>com.huadi.dmp</groupId> <artifactId>javax.ws.rs</artifactId> 
+			<version>1.0.0</version> </dependency> <dependency> <groupId>com.huadi.dmp</groupId> 
+			<artifactId>org.restlet.ext.fileupload</artifactId> <version>1.1</version> 
+			</dependency> -->
+<!-- ls -ltr  |awk '{print $9}'|grep jar |awk -F. '{print "<dependency> <groupId>com.roufid.tutorials</groupId><artifactId>"$1"."$2"."$3"</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/WebContent/WEB-INF/lib/"$0"</systemPath></dependency>"}'
+  -->
+<dependency> <groupId>com.winhong</groupId><artifactId>pushlet.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/pushlet.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>aspectjrt-1.8.6.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/aspectjrt-1.8.6.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>aopalliance-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/aopalliance-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>antlr-2.7.7.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/antlr-2.7.7.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>annotations-2.0.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/annotations-2.0.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>activation-1.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/activation-1.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>FastInfoset-1.2.12.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/FastInfoset-1.2.12.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>aspectjweaver-1.8.6.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/aspectjweaver-1.8.6.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>bcprov-jdk15on-1.50.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/bcprov-jdk15on-1.50.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>cache-ri-impl-1.0.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/cache-ri-impl-1.0.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>cache-api-1.0.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/cache-api-1.0.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>c3p0-0.9.1.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/c3p0-0.9.1.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>cas-server-support-generic-4.1.9.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/cas-server-support-generic-4.1.9.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>cas-server-security-filter-2.0.4.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/cas-server-security-filter-2.0.4.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>cas-server-core-api-4.1.9.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/cas-server-core-api-4.1.9.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>cas-server-core-4.1.9.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/cas-server-core-4.1.9.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>cdi-api-1.0-SP4.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/cdi-api-1.0-SP4.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>commons-beanutils-1.8.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/commons-beanutils-1.8.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>classmate-1.0.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/classmate-1.0.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>commons-dbcp-1.4.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/commons-dbcp-1.4.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>commons-codec-1.10.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/commons-codec-1.10.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>commons-fileupload-1.2.2.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/commons-fileupload-1.2.2.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>commons-jexl-1.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/commons-jexl-1.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>commons-io-2.4.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/commons-io-2.4.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>commons-pool-1.5.4.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/commons-pool-1.5.4.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>commons-logging-1.1.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/commons-logging-1.1.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>commons-lang3-3.3.2.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/commons-lang3-3.3.2.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>cryptacular-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/cryptacular-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>geronimo-jta_1.1_spec-1.1.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/geronimo-jta_1.1_spec-1.1.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>dom4j-1.6.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/dom4j-1.6.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>hibernate-commons-annotations-4.0.5.Final.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/hibernate-commons-annotations-4.0.5.Final.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>guava-18.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/guava-18.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>hibernate-jpa-2.1-api-1.0.0.Final.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/hibernate-jpa-2.1-api-1.0.0.Final.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>hibernate-core-4.3.10.Final.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/hibernate-core-4.3.10.Final.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>hibernate-validator-5.1.3.Final.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/hibernate-validator-5.1.3.Final.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>httpclient-4.4.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/httpclient-4.4.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jackson-annotations-2.5.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jackson-annotations-2.5.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>istack-commons-runtime-2.16.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/istack-commons-runtime-2.16.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>inspektr-support-spring-1.3.GA.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/inspektr-support-spring-1.3.GA.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>inspektr-error-1.3.GA.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/inspektr-error-1.3.GA.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>inspektr-common-1.3.GA.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/inspektr-common-1.3.GA.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>inspektr-audit-1.3.GA.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/inspektr-audit-1.3.GA.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>inspektr-aspects-1.3.GA.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/inspektr-aspects-1.3.GA.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>httpcore-4.4.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/httpcore-4.4.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jackson-core-2.5.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jackson-core-2.5.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jandex-1.1.0.Final.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jandex-1.1.0.Final.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jackson-databind-2.5.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jackson-databind-2.5.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>java-uuid-generator-3.1.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/java-uuid-generator-3.1.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jaxb-api-2.2.7.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jaxb-api-2.2.7.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>javax.inject-1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/javax.inject-1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>javax.el-2.2.6.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/javax.el-2.2.6.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>javassist-3.19.0-GA.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/javassist-3.19.0-GA.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jaxb-core-2.2.7.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jaxb-core-2.2.7.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jboss-transaction-api_1.2_spec-1.0.0.Final.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jboss-transaction-api_1.2_spec-1.0.0.Final.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jboss-logging-3.1.3.GA.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jboss-logging-3.1.3.GA.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jboss-interceptors-api_1.1_spec-1.0.0.Beta1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jboss-interceptors-api_1.1_spec-1.0.0.Beta1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jaxb-impl-2.2.7.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jaxb-impl-2.2.7.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jcl-over-slf4j-1.7.12.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jcl-over-slf4j-1.7.12.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jcifs-1.3.17.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jcifs-1.3.17.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jersey-core-1.19.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jersey-core-1.19.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jersey-server-1.19.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jersey-server-1.19.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jersey-servlet-1.19.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jersey-servlet-1.19.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jersey-spring-1.19.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jersey-spring-1.19.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>joda-time-2.6.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/joda-time-2.6.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jsr311-api-1.1.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jsr311-api-1.1.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jsr250-api-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jsr250-api-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jsr173_api-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jsr173_api-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jose4j-0.4.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jose4j-0.4.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jul-to-slf4j-1.7.12.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jul-to-slf4j-1.7.12.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>jstl-1.2.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/jstl-1.2.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>ldaptive-1.0.6.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/ldaptive-1.0.6.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>log4j-api-2.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/log4j-api-2.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>log4j-web-2.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/log4j-web-2.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>log4j-slf4j-impl-2.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/log4j-slf4j-impl-2.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>log4j-jcl-2.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/log4j-jcl-2.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>log4j-core-2.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/log4j-core-2.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>metrics-spring-3.1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/metrics-spring-3.1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>metrics-servlets-3.1.2.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/metrics-servlets-3.1.2.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>metrics-jvm-3.1.2.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/metrics-jvm-3.1.2.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>metrics-json-3.1.2.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/metrics-json-3.1.2.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>metrics-healthchecks-3.1.2.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/metrics-healthchecks-3.1.2.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>metrics-core-3.1.2.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/metrics-core-3.1.2.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>metrics-annotation-3.1.2.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/metrics-annotation-3.1.2.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>mail-1.4.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/mail-1.4.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>mybatis-3.2.5.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/mybatis-3.2.5.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>mysql-connector-java-5.1.31.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/mysql-connector-java-5.1.31.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>person-directory-impl-1.7.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/person-directory-impl-1.7.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>person-directory-api-1.7.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/person-directory-api-1.7.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>ognl-2.6.11.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/ognl-2.6.11.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>quartz-2.2.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/quartz-2.2.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>reflections-0.9.10.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/reflections-0.9.10.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>slf4j-api-1.7.12.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/slf4j-api-1.7.12.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>shiro-core-1.2.3.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/shiro-core-1.2.3.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-aop-4.1.8.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-aop-4.1.8.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-binding-2.4.1.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-binding-2.4.1.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-beans-4.1.8.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-beans-4.1.8.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-context-4.1.8.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-context-4.1.8.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-context-support-4.1.8.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-context-support-4.1.8.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-core-4.1.8.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-core-4.1.8.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-expression-4.1.8.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-expression-4.1.8.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-js-2.4.1.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-js-2.4.1.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-jdbc-4.1.8.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-jdbc-4.1.8.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-js-resources-2.4.1.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-js-resources-2.4.1.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-orm-4.1.8.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-orm-4.1.8.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-security-config-4.0.1.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-security-config-4.0.1.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-security-core-4.0.1.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-security-core-4.0.1.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-security-web-4.0.1.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-security-web-4.0.1.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-tx-4.1.8.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-tx-4.1.8.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-web-4.1.8.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-web-4.1.8.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-webflow-client-repo-1.0.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-webflow-client-repo-1.0.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-webflow-2.4.1.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-webflow-2.4.1.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>spring-webmvc-4.1.8.RELEASE.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/spring-webmvc-4.1.8.RELEASE.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>stax2-api-3.1.4.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/stax2-api-3.1.4.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>stax-api-1.0-2.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/stax-api-1.0-2.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>standard-1.1.2.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/standard-1.1.2.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-cas-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-cas-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-sched-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-sched-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-rest-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-rest-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-persistence-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-persistence-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-passwordcard-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-passwordcard-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-mail-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-mail-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-ldap-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-ldap-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-engine-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-engine-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-webapp-support-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-webapp-support-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-service-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-service-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>validation-api-1.1.0.Final.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/validation-api-1.1.0.Final.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>xml-apis-1.4.01.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/xml-apis-1.4.01.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>woodstox-core-asl-4.4.1.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/woodstox-core-asl-4.4.1.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-sdk-httpclient-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-sdk-httpclient-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-sdk-core-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-sdk-core-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>uap-client-core-1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/uap-client-core-1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.restlet_1.1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.restlet_1.1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.restlet.ext.jaxrs_1.1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.restlet.ext.jaxrs_1.1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.restlet.ext.fileupload_1.1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.restlet.ext.fileupload_1.1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.osgi_3.10.102.v20160118-1700.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.osgi_3.10.102.v20160118-1700.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.osgi.util_3.3.100.v20150423-1351.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.osgi.util_3.3.100.v20150423-1351.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.osgi.services_3.5.0.v20150519-2006.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.osgi.services_3.5.0.v20150519-2006.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.jetty.xml_9.2.13.v20150730.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.jetty.xml_9.2.13.v20150730.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.jetty.webapp_9.2.13.v20150730.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.jetty.webapp_9.2.13.v20150730.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.jetty.util_9.2.13.v20150730.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.jetty.util_9.2.13.v20150730.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.jetty.servlet_9.2.13.v20150730.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.jetty.servlet_9.2.13.v20150730.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.jetty.server_9.2.13.v20150730.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.jetty.server_9.2.13.v20150730.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.jetty.security_9.2.13.v20150730.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.jetty.security_9.2.13.v20150730.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.jetty.io_9.2.13.v20150730.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.jetty.io_9.2.13.v20150730.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.jetty.http_9.2.13.v20150730.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.jetty.http_9.2.13.v20150730.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.jetty.continuation_9.2.13.v20150730.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.jetty.continuation_9.2.13.v20150730.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.util_1.0.500.v20130404-1337.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.util_1.0.500.v20130404-1337.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.simpleconfigurator_1.1.100.v20150423-1455.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.simpleconfigurator_1.1.100.v20150423-1455.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.registry_3.6.0.v20150318-1503.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.registry_3.6.0.v20150318-1503.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.preferences_3.5.300.v20150408-1437.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.preferences_3.5.300.v20150408-1437.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.jsp.jasper_1.0.500.v20150119-1358.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.jsp.jasper_1.0.500.v20150119-1358.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.jsp.jasper.registry_1.0.300.v20130327-1442.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.jsp.jasper.registry_1.0.300.v20130327-1442.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.http.servlet_1.2.2.v20160202-2102.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.http.servlet_1.2.2.v20160202-2102.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.http.registry_1.1.300.v20130402-1529.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.http.registry_1.1.300.v20130402-1529.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.http.jetty_3.1.2.v20160115-1350.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.http.jetty_3.1.2.v20160115-1350.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.ds_1.4.300.v20150423-1356.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.ds_1.4.300.v20150423-1356.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.console_1.1.100.v20141023-1406.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.console_1.1.100.v20141023-1406.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.common_3.7.0.v20150402-1709.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.common_3.7.0.v20150402-1709.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.equinox.app_1.3.300.v20150423-1356.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.equinox.app_1.3.300.v20150423-1356.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.core.runtime_3.11.1.v20150903-1804.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.core.runtime_3.11.1.v20150903-1804.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.core.runtime.compatibility.registry_3.6.0.v20150318-1505.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.core.runtime.compatibility.registry_3.6.0.v20150318-1505.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.core.jobs_3.7.0.v20150330-2103.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.core.jobs_3.7.0.v20150330-2103.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.eclipse.core.contenttype_3.5.0.v20150421-2214.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.eclipse.core.contenttype_3.5.0.v20150421-2214.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.apache.jasper.glassfish_2.2.2.v201501141630.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.apache.jasper.glassfish_2.2.2.v201501141630.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.apache.felix.gogo.shell_0.10.0.v201212101605.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.apache.felix.gogo.shell_0.10.0.v201212101605.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.apache.felix.gogo.runtime_0.10.0.v201209301036.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.apache.felix.gogo.runtime_0.10.0.v201209301036.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.apache.felix.gogo.command_0.10.0.v201209301215.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.apache.felix.gogo.command_0.10.0.v201209301215.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.apache.commons.logging_1.1.1.v201101211721.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.apache.commons.logging_1.1.1.v201101211721.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>org.apache.ant_1.9.6.v201510161327.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/org.apache.ant_1.9.6.v201510161327.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>javax.ws.rs_2.0.1.v201504171603.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/javax.ws.rs_2.0.1.v201504171603.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>javax.servlet_3.1.0.v201410161800.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/javax.servlet_3.1.0.v201410161800.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>javax.servlet.jsp_2.2.0.v201112011158.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/javax.servlet.jsp_2.2.0.v201112011158.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>javax.el_2.2.0.v201303151357.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/javax.el_2.2.0.v201303151357.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.wg.ui_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.wg.ui_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.wg.sync_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.wg.sync_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.wg.starter_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.wg.starter_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.wg.rest.service_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.wg.rest.service_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.wg.persistence_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.wg.persistence_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.wg.nls_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.wg.nls_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.wg.hub_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.wg.hub_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.wg.bo.service_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.wg.bo.service_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.dmp.task_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.dmp.task_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.dmp.nls_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.dmp.nls_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.dmp.logger_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.dmp.logger_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.dmp.lib.repository_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.dmp.lib.repository_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.dmp.jms_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.dmp.jms_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.dmp.connecter_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.dmp.connecter_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.winhong.dmp.common_1.0.0.201704100724.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.winhong.dmp.common_1.0.0.201704100724.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.noelios.restlet_1.1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.noelios.restlet_1.1.0.jar</systemPath></dependency>
+<dependency> <groupId>com.winhong</groupId><artifactId>com.noelios.restlet.ext.servlet_1.1.0.jar</artifactId><version>1.0</version><scope>system</scope><systemPath>${basedir}/lib/com.noelios.restlet.ext.servlet_1.1.0.jar</systemPath></dependency>
+</dependencies>
+
+</project>

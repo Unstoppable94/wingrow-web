@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+	<meta charset='utf-8'>
+	<title>WinGrowß</title>
+	<meta name="description" content="app, web app, responsive, responsive layout, admin, admin panel, admin dashboard, flat, flat ui, ui kit, AngularJS, ui route, charts, widgets, components" />
+	
+	<meta content='width=device-width, initial-scale=1, maximum-scale=1' name='viewport'>
+	<link href='assets/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+	<link href='assets/css/animate.min.css' rel='stylesheet' type='text/css'>
+	<link href='assets/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+	<link href='assets/css/simple-line-icons.css' rel='stylesheet' type='text/css'>
+	<link href="assets/lib/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+	<link href='assets/css/font.css' rel='stylesheet' type='text/css'>
+	<link href='assets/css/angulr.css' rel='stylesheet' type='text/css'>
+	<link href='assets/css/knockout-datatable.css' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" media="all" href="assets/css/app.css" />
+	
+	<style>
+		.login-container{
+			background-color:#282928;
+		}
+		.login-content{
+			background-color: #333433;
+			width:392px;
+			height:480px;
+			position:absolute;
+			top:50%;
+			left:50%;
+			margin-top:-230px;
+			margin-left:-196px;
+			text-align:center;
+			padding-top:32px;
+		}
+		.title{
+			font-size:26px;
+			color:#fff;
+			margin:12px 0 30px 0;
+		}
+		.second-title{
+			font-size:18px;
+			color:#aeaeae;
+		}
+		.info{
+			position:relative;
+		}
+		input{
+			padding-left:40px;
+			width:311px;
+			height:41px;
+			border:none;
+			background-color: #484948;
+			color:#fff;
+			font-size:14px;
+		}
+		.info input.user{
+			margin:20px 0 10px 0;
+		}
+		em{
+			display:inline-block;
+			width:16px;
+			height:16px;
+			position:absolute;
+			left:52px;
+			top:32px;
+		}
+		em.user-img{
+			background: url(assets/img/user.png) no-repeat;
+		}
+		em.password-img{
+			background: url(assets/img/password.png) no-repeat;
+			top:12px;
+		}
+		.submit{
+			margin-top:40px;
+			background-color: #4ba268;
+			padding:0;
+			margin-bottom:30px;
+		}
+		.footer{
+			width:300px;
+			height:30px;
+			position:absolute;
+			bottom:0;
+			left:50%;
+			margin-top:-150px;
+			margin-left:-150px;
+			text-align:center;
+			font-size:14px;
+			color:#969696;
+		}
+	</style>
+</head>
+<body>
+	<div class="login-container">
+		<div class="login-content">
+			<div><img src="assets/img/logo_new.png" alt=""></div>
+			<p class="title">WinGrow<br/>持续部署工具</p>
+			<p class="second-title">用户登录</p>
+			<form id="fm1" class="form-validation" action="http://192.168.101.98:8100/webapi/login" method="post" name="loginform">
+				<div class="info">
+					<em class="user-img"></em>
+					<input class="user" type="text" placeholder="用户名" id="username" name="username" autofocus data-bind="textInput:loginVO().username">
+				</div>
+				<div class="info">
+					<em class="password-img"></em>
+					<input id="password" name="password" class="password" type="password" placeholder="密码" data-bind="textInput:loginVO().password">
+				</div>
+				<div>
+					<input class="submit" name="submit333" accesskey="l" value="登录" tabindex="6" type="button" data-bind="click:formSubmit"/>
+				</div>
+			</form>
+		</div>
+		<div class="footer">
+			版权所有  2017航天云宏技术有限公司
+		</div>
+	</div>
+
+</body>
+
+<script src='assets/js/jquery.min.js'></script>
+
+<script src="assets/js/underscore.js"></script>
+<script src="assets/js/backbone.js"></script>
+
+<script src="assets/js/knockout.js"></script>
+<script src="assets/js/knockout.bootstrap.modal.js"></script>
+<script src="assets/js/knockout-datatable.js"></script>
+<script src="assets/js/knockout.validation.js"></script>
+
+<script src='assets/js/bootstrap.min.js'></script>
+<script src="assets/js/jquery-drag.js"></script>
+
+<script src='assets/js/ui-load.js'></script>
+<script src='assets/js/ui-jp.config.js'></script>
+<script src='assets/js/ui-jp.js'></script>
+<script src='assets/js/ui-nav.js'></script>
+<script src='assets/js/ui-toggle.js'></script>
+
+<script src="assets/js/ace.js"></script>
+<script src="assets/js/ace.ajax-content.js"></script>
+<script src="assets/js/app.ajax-content.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/request.js"></script>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/api_test.js"></script>
+
+<script src='assets/js/ajax-pushlet-client.js'></script>
+<script src='assets/js/ajaxfileupload.js'></script>
+<script src='assets/js/common.js'></script>
+<script src='assets/lib/moment/moment.js'></script>
+<script src='assets/lib/bootstrap-daterangepicker/daterangepicker.js'></script>
+
+<script>
+	!function($) {
+		var baseUrl = './webapi'
+		$.login = {
+			post : function(param,callback,errorCallback){
+				$.ajax({
+					url:baseUrl + '/login',
+					data:JSON.stringify(param),
+					contentType:'application/json',
+					type:'POST',
+					success:function(data){
+						if(callback)
+							callback(data)
+					},
+					error:function(data){
+						if(errorCallback)
+							errorCallback(data)
+					}
+				})
+			},
+		};
+	}(window.jQuery);
+</script>
+
+<script type="text/javascript">
+	function viewModel() {
+		var self = this;
+
+		this.loginVO = ko.observable({
+			"username" : "",
+			"password" : ""
+		});
+
+		
+
+		this.formSubmit = function(){
+			$.login.post(self.loginVO(),function(data){
+				console.log(data)
+				if(!data.exception && data.authorization){
+					document.cookie = "authorization = " + data.authorization;
+					//if(!data.mustChangePassword)
+						window.location.href = "/#pages/welcome/index"
+					//else
+						//window.location.href = "/#pages/user/edit_password"
+				}
+				else
+					alert(data.exception)
+			})
+		}
+
+		$(document).bind("keydown",function(e){
+			var e = e || window.event;
+			var kc = e.keyCode || e.which;
+			if(kc == 13)
+				self.formSubmit();
+		});
+	}
+
+	ko.applyBindings(new viewModel(), $('.login-container')[0]);
+</script>
+
+</html>

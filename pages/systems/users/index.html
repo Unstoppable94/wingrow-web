@@ -1,0 +1,38 @@
+<!-- CSC嵌入用户管理-->
+
+<div class="bg-light lter b-b wrapper-sm">
+  <ol class="breadcrumb">
+    <li>当前位置：</li>
+    <li>系统</li>
+    <li class="active">用户管理</li>
+  </ol>
+</div>
+<div class="wrapper-md">
+  <div class='bg-white b b-blue'>
+    <iframe id="useriframe" width="100%" height="600" style="border:none;"></iframe>
+  </div>
+</div>
+<script type="text/javascript">
+
+  var scripts = [null, null];
+  $('.page-content-area').ace_ajax('loadScripts', scripts, function(args) {
+	csc.rest.get('api/v5.0.0/uap/url', function(data){
+		$("#useriframe").attr("src", data);
+		setTimeout(function(){
+	      	$("#useriframe").contents().find(".app-content-body").css("width","100%");
+	    },500)
+	});
+	
+  });
+  
+</script>
+
+
+
+
+
+
+
+
+
+ 

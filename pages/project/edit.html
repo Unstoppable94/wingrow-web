@@ -1,0 +1,395 @@
+<div class="bg-light lter b-b wrapper-sm">
+    <ol class="breadcrumb">
+        <li>当前位置：</li>
+        <li class="active">修改项目</li>
+    </ol>
+</div>
+<div class="wrapper-md">
+    <div class="panel panel-default b-blue wrapper-md">
+        <div>
+            <button class="btn btn-info btn-sm" data-bind="click:create">确定</button>
+            <a class="btn btn-default btn-sm" href="#pages/project/index" data-toggle="modal" data-target="#cacelButton">取消</a>
+        </div>
+        <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="cacelButton">
+          <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">系统提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p>取消不会保存页面信息，确定要取消？</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-info btn-sm" data-bind="click:save">确定</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <h5>
+        <i class="fa fa-minus fa-rotate-90 text-info"></i>静态信息
+    </h5>
+    <div class="form-horizontal" data-bind="with:staticVO">
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>项目名称</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" data-bind="value:name" />
+                </div>
+
+            </div>
+            <div class="form-group col-sm-6" style="position:relative">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>项目类型</label>
+                <div class="col-sm-7" data-toggle="modal" data-target="#changeType" style="position:absolute;left:36%;z-index:1;width:51.333333%;height: 30px;line-height: 30px;" id="model">
+                </div>
+                <div class="col-sm-7">
+                    <select class="form-control input-sm" data-bind="options:$root.projectTypeList,optionsText:'name',optionsValue:'id',value:projectType"></select>
+                </div> 
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>所属项目组</label>
+                <div class="col-sm-7">
+                    <select class="form-control input-sm" data-bind="options:$root.groupList,optionsText:'name',optionsValue:'id',value:groupId"></select>
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>SCM类型</label>
+                <div class="col-sm-7">
+                    <select class="form-control" data-bind="value:SCMTYPE">
+                        <option value="git">git</option>
+                        <option value="svn">svn</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>URL</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control nolengthlimit" data-bind="value:SCMUrl" />
+                </div>
+
+            </div>
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>最大执行时长(分钟)</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" data-bind="value:maxExcutiontime" />
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>用户名</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" data-bind="value:SCMUser" />
+                </div>
+
+            </div>
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>密码</label>
+                <div class="col-sm-7">
+                    <input type="passowrd" class="form-control" data-bind="value:SCMPassword" />
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>触发模式</label>
+                <div class="col-sm-7">
+                    <select class="form-control input-sm" data-bind="options:$root.triggerList,optionsText:'text',optionsValue:'val',value:trigger" id="triggerType"></select>
+                </div>
+
+            </div>
+            <div class="form-group col-sm-6" id="triggerCrontab" style="display: none;">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>crontab</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control"   />
+                </div>
+            </div>
+            <div class="form-group col-sm-6" id="triggerOther" style="display: none;">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>间隔固定时长(分钟)</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" data-bind="value:triggerProperty" />
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-12">
+                <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>额外属性</label>
+                <div class="col-sm-9" style="width: 79.7%;">
+                    <input class="form-control" rows="3" data-bind="value:exraProperties" style="margin-left:-5px"></input>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label">构建成功通知邮箱</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" data-bind="value:mailOnSuccess" />
+                </div>
+            </div>
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label">构建失败通知邮箱</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" data-bind="value:mailOnfail" />
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label">构建恢复通知邮箱</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" data-bind="value:mailOnReovery" />
+                </div>
+            </div>
+
+
+        </div>
+            <!-- <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>NAVEN版本</label>
+                <div class="col-sm-7">
+                    <select class="form-control input-sm" data-bind="options:$root.mavenList,optionsText:'id',optionsValue:'id',value:mavenId"></select>
+                </div>
+            
+            </div>
+            <div class="form-group col-sm-6">
+                <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>JDK版本</label>
+                <div class="col-sm-7">
+                    <select class="form-control input-sm" data-bind="options:$root.jdkList,optionsText:'id',optionsValue:'id',value:jdk"></select>
+                </div>
+            
+            </div> -->
+            <div class="row">
+                <div class="form-group col-sm-12">
+                    <label  class="col-sm-2 control-label">项目描述</label>
+                    <div class="col-sm-9" style="width: 79.7%;">
+                        <textarea class="form-control" rows="3" data-bind="value:description" style="margin-left:-5px"></textarea>
+                    </div>
+                </div>
+            </div></div>
+            <hr />
+            <h5>
+              <i class="fa fa-minus fa-rotate-90 text-info"></i>动态信息
+          </h5>
+          <!-- ko foreach: {data: dynamicsVO, as: '$row'}  -->
+          <div class="form-horizontal" id="dynamicsForm">
+              <div class="form-group">
+                <label  class="col-sm-2 control-label" >
+                  <h4 class="text-left" data-bind="text:$row.name"></h4>
+              </label>
+          </div>
+          <!-- ko foreach: {data: $row.elements, as: '$element'}  -->
+          <div class="form-group">
+            <label  class="col-sm-2 control-label" ><span data-bind="if:$element.type == 'string' && $element.required" class="text-danger inline" >*</span><span data-bind="text:$element.name"></span></label>
+            <div class="col-sm-5" >
+                <div data-bind="if:$element.type == 'string'">
+                    <input type="text" class="form-control" data-bind="value:$element.value,attr:{'disabled':!$element.writable,'required':$element.type == 'string' && $element.required}" />
+                </div>
+                <div data-bind="if:$element.type == 'boolean'">
+                    <div class="checkbox">
+                        <label>
+                         <input type="checkbox" value="true" data-bind="checked:$element.value"> 
+                        </label>
+                    </div>
+                 </div>
+                <div data-bind="if:$element.type == 'enum'">
+                    <div class="checkbox">
+                        <select class="form-control input-sm" data-bind="options:$element.enumValues,optionsText:'name',optionsValue:'id',value:$element.value" id="triggerType"></select>
+                    </div>
+                </div>
+            </div>
+</div>
+<!-- /ko -->
+</div>
+<!-- /ko -->
+<hr />
+<div>
+  <button class="btn btn-info btn-sm" data-bind="click:create">确定</button>
+  <a class="btn btn-default btn-sm" href="#pages/project/index" data-toggle="modal" data-target=".bs-example-modal-sm">取消</a>
+</div>
+</div>
+
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="changeType">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">系统提示</h4>
+        </div>
+        <div class="modal-body">
+            <p>修改项目类型会重置所有动态信息，需要重新配置。确认要修改？</p>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-info btn-sm" data-bind="click:modifySava" data-dismiss="modal">确定</a>
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var scripts = [null,"assets/js/temp/tempData.js","api/project/project.js","api/projectGroup/projectGroup.js",'api/MISC/MISC.js']
+    $('.page-content-area').ace_ajax('loadScripts', scripts, function(args) {
+        function viewModel() {
+            var self = this;
+            this.staticVO = ko.validatedObservable({
+                "name":ko.observable("").extend({required: true}),
+                "projectType":ko.observable("").extend({required: true}),
+                "description":ko.observable(""),
+                /*"mavenId":ko.observable("").extend({required: true}),
+                "jdk":ko.observable("").extend({required: true}),*/
+                "cloud":ko.observable("").extend({required: true}),
+                "imageName":ko.observable("").extend({required: true}),
+                "id":ko.observable("").extend({required: true}),
+                "SCMUrl":ko.observable("").extend({required: true}),
+                "SCMUser":ko.observable("").extend({required: true}),
+                "SCMPassword":ko.observable("").extend({required: true}),
+                "SCMBranch":ko.observable("").extend({required: true}),
+                "SCMTYPE":ko.observable("").extend({required: true}),
+                "trigger":ko.observable("").extend({required: true}),
+                "triggerProperty":ko.observable("").extend({required: true}),
+                "exraProperties":ko.observable(""),
+                "createTime":ko.observable("").extend({required: true}),
+                "lastModifyTime":ko.observable("").extend({required: true}),
+                "lastModifyer":ko.observable("").extend({required: true}),
+                "mailOnfail":ko.observable(""),
+                "mailOnSuccess":ko.observable(""),
+                "mailOnReovery":ko.observable(""),
+                "groupId":ko.observable("ListTest").extend({required: true}),
+                "maxExcutiontime":ko.observable("").extend({required: true})
+            });
+
+            this.projectTypeList = ko.observableArray();
+            this.triggerList = ko.observableArray();
+            this.groupList = ko.observableArray();
+            this.mavenList = ko.observableArray();
+            this.jdkList = ko.observableArray();
+
+            this.triggerList([
+                {'text':'手动',val:'manual'},
+                {'text':'crontab',val:'crontab'},
+                {'text':'固定时长',val:'other'}
+                ]);
+
+            $.MISC.projectType.query(null,function(data){
+                self.projectTypeList(data);
+            });
+            $.projectGroup.query(null,function(data){
+                self.groupList(data.results)
+            });
+
+            /*$.MISC.maven.query(null,function(data){
+                self.mavenList(data);
+            });
+
+            $.MISC.jdk.query(null,function(data){
+                self.jdkList(data);
+            });*/
+
+            this.dynamicsVO = ko.observableArray();
+            $.project.get({id:args.name},function(data){
+                var _data = data;
+                self.staticVO(_data.baseInfo)
+                self.dynamicsVO(buildBooleanData(_data.workflow.formProperties));
+                $("#triggerType").bind('change',function(){
+                    var val = $(this).val();
+                    $("#triggerOther,#triggerCrontab").hide();
+                    if(val == 'crontab') $("#triggerCrontab").show();
+                    if(val == 'other') $("#triggerOther").show();
+                })
+            })
+            function buildBooleanData(data){
+                $.each(data,function(n,v){
+                    $.each(v.elements,function(a,b){
+                        if(b.type == 'boolean'){
+                            b.value = b.value == "true"?true:false;
+                        }
+                    })
+                })
+                return data;
+            }
+            function buildBooleanDataRevert(data){
+                $.each(data,function(n,v){
+                    $.each(v.elements,function(a,b){
+                        if(b.type == 'boolean'){
+                            b.value = b.value?"true":"false";
+                        }
+                    })
+                })
+                return data;
+            }
+
+            function checkRequired(inputEl){
+                var flag = true;
+                $(inputEl).removeClass("validationElement");
+                $(inputEl).next('.validationMessage').remove();
+                if($(inputEl).val() == '' || $(inputEl).val() == null){
+                    $(inputEl).addClass("validationElement");
+                    $(inputEl).after('<span class="validationMessage">不能为空!</span>');
+                    flag = false;
+                }
+                return flag;
+            }
+
+            this.checkRequired = function(){
+                var inpus = $("#dynamicsForm input[required]");
+                var flag = true;
+                $.each(inpus,function(n,v){
+                    flag = checkRequired(v);
+                    $(v).unbind('blur.checkRequired').bind("blur.checkRequired",function(){
+                        checkRequired(v);
+                    });
+                })
+                return flag;
+            }
+
+            this.create = function(){
+                var param = {
+                    baseInfo:self.staticVO(),
+                    workflow:{
+                        formProperties:buildBooleanDataRevert(self.dynamicsVO())
+                    }
+                }
+                ko.validation.group(self.staticVO).showAllMessages();
+                if(self.checkRequired() && self.staticVO.isValid())
+                    $.project.update({id:args.name},param,function(data){
+                        if(!data.exception){
+                            alert("修改成功！");
+                            window.location.hash = "#pages/project/index";
+                        }else{
+                            alert(data.exception);
+                        }
+                    })
+            }
+
+            this.save = function(){
+                window.location.hash = "#pages/project/index";
+                $('.modal-backdrop.fade.in').remove();
+                $('body').removeClass('modal-open');
+            }
+
+            this.modifySava = function(){
+                $.project.query({action:'newWorkflow',projecttype:'mavenProject'},function(data){
+                    var _data = data;
+                    self.dynamicsVO(buildBooleanData(_data.formProperties));
+                    $('#model').remove()
+                })
+
+            }
+        }
+        ko.applyBindings(new viewModel(), $('#page-content')[0]);
+    })
+</script>
