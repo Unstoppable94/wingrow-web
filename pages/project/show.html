@@ -11,82 +11,101 @@
         <a href="#pages/project/index" class="btn btn-sm btn-default" >返回</a>
         <button class="btn btn-info btn-sm" data-bind="click:triggerBuild">构建</button>
       </div>
-      <div class="col-xs-2">
-        <div class="input-group">
-          <span class="input-group-addon">构建号</span>
-          <input type="text" placeholder="请输入名称" data-bind="value:param.buildNumber" class="form-control input-sm" >
-        </div>       
-      </div>
-      <div class="col-xs-2">
-        <div class="input-group input-group-sm">
-          <span class="input-group-addon">构建状态</span>
-          <select class="form-control" data-bind="value:param.buildStatus ">
-            <option value="">全部</option>
-            <option value="success">成功</option>
-            <option value="failed">失败</option>
-            <option value="stop">终止</option>
-          </select>
-        </div>       
-      </div>
-      <div class="col-xs-2">
-        <div class="input-group input-group-sm">
-          <span class="input-group-addon">所处步骤</span>
-          <select class="form-control input-sm" data-bind="options:$root.stagesInfoList,optionsText:'name',optionsValue:'id',value:param.latestStage" ></select>
-        </div>       
-      </div>
-      <div class="col-xs-2">
-        <a class="btn btn-default btn-sm" data-bind='click:searchData'>搜索</a>
-        <a class="btn btn-default btn-sm" data-bind="click: reset">重置</a>
-      </div>        
-    </div>
-    <p> </p>
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>构建号</th>
-            <th>构建开始时间</th>
-            <th>构建状态</th>
-            <th>所处步骤</th>
-            <th>所处步骤状态</th>
-            <th>执行时长</th>
-            <th>查看日志</th>
-            <th>结果物</th>
-            <th>image下载命令</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- ko foreach: {data: projectTable, as: '$row'}  -->
-          <tr>
-            <td><a data-bind="text:$row.number,click:$root.showBtn"></a></td>
-            <td data-bind="text:moment($row.buildDate).format('YYYY/MM/DD HH:mm:ss')"></td>
-            <td>
-              <span data-bind="if:$row.status=='IN_PROGRESS'">构建中</span>
-              <span data-bind="if:$row.status=='FAILURE'">失败</span>
-              <span data-bind="if:$row.status=='SUCCESS'">成功</span>
-              <span data-bind="if:$row.status=='NOTBUILD'">没有构建</span>
-            </td>
-            <td data-bind="text:$row.lastStage"></td>
-            <td>
-              <span data-bind="if:$row.lastStageStatus=='IN_PROGRESS'">构建中</span>
-              <span data-bind="if:$row.lastStageStatus=='FAILURE'">失败</span>
-              <span data-bind="if:$row.lastStageStatus=='SUCCESS'">成功</span>
-              <span data-bind="if:$row.lastStageStatus=='NOTBUILD'">没有构建</span>
-            </td>
-            <td data-bind="text:$row.duration + ' ms'"></td>
-            <td><a data-bind="attr:{href:'./webapi/download?name=' + encodeURIComponent($row.logUrl)}">日志下载</a></td>
-            <td>
-              <span data-bind="if:!$row.artifactUrl">-</span>
-              <a data-bind="if:$row.artifactUrl,attr:{href:'./webapi/download?name=' + encodeURIComponent($row.artifactUrl)}">结果下载</a>
 
-            </td>
-            <td data-bind="text:$row.imageUrl"></td>
-          </tr>
-          <!-- /ko -->
-        </tbody>
-      </table>
+      <div role="dialog" aria-hidden="true" class="modal fade"
+      data-bind="modal: { show: isCreate }">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">系统提示</h4>
+          </div>
+          <div class="modal-body">
+            <p>开始构建</p>
+          </div>
+          <div class="modal-footer">
+            <a class="btn btn-info btn-sm" data-bind="click:saveCreate">确定</a>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div class="col-xs-2">
+      <div class="input-group">
+        <span class="input-group-addon">构建号</span>
+        <input type="text" placeholder="请输入名称" data-bind="value:param.buildNumber" class="form-control input-sm" >
+      </div>       
+    </div>
+    <div class="col-xs-2">
+      <div class="input-group input-group-sm">
+        <span class="input-group-addon">构建状态</span>
+        <select class="form-control" data-bind="value:param.buildStatus ">
+          <option value="">全部</option>
+          <option value="success">成功</option>
+          <option value="failed">失败</option>
+          <option value="stop">终止</option>
+        </select>
+      </div>       
+    </div>
+    <div class="col-xs-2">
+      <div class="input-group input-group-sm">
+        <span class="input-group-addon">所处步骤</span>
+        <select class="form-control input-sm" data-bind="options:$root.stagesInfoList,optionsText:'name',optionsValue:'id',value:param.latestStage" ></select>
+      </div>       
+    </div>
+    <div class="col-xs-2">
+      <a class="btn btn-default btn-sm" data-bind='click:searchData'>搜索</a>
+      <a class="btn btn-default btn-sm" data-bind="click: reset">重置</a>
+    </div>        
   </div>
+  <p> </p>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>构建号</th>
+          <th>构建开始时间</th>
+          <th>构建状态</th>
+          <th>所处步骤</th>
+          <th>所处步骤状态</th>
+          <th>执行时长</th>
+          <th>查看日志</th>
+          <th>结果物</th>
+          <th>image下载命令</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- ko foreach: {data: projectTable, as: '$row'}  -->
+        <tr>
+          <td><a data-bind="text:$row.number,click:$root.showBtn"></a></td>
+          <td data-bind="text:moment($row.buildDate).format('YYYY/MM/DD HH:mm:ss')"></td>
+          <td>
+            <span data-bind="if:$row.status=='IN_PROGRESS'">构建中</span>
+            <span data-bind="if:$row.status=='FAILURE'">失败</span>
+            <span data-bind="if:$row.status=='SUCCESS'">成功</span>
+            <span data-bind="if:$row.status=='NOTBUILD'">没有构建</span>
+          </td>
+          <td data-bind="text:$row.lastStage"></td>
+          <td>
+            <span data-bind="if:$row.lastStageStatus=='IN_PROGRESS'">构建中</span>
+            <span data-bind="if:$row.lastStageStatus=='FAILURE'">失败</span>
+            <span data-bind="if:$row.lastStageStatus=='SUCCESS'">成功</span>
+            <span data-bind="if:$row.lastStageStatus=='NOTBUILD'">没有构建</span>
+          </td>
+          <td data-bind="text:$row.duration + ' ms'"></td>
+          <td><a data-bind="attr:{href:'./webapi/download?name=' + encodeURIComponent($row.logUrl)}">日志下载</a></td>
+          <td>
+            <span data-bind="if:!$row.artifactUrl">-</span>
+            <a data-bind="if:$row.artifactUrl,attr:{href:'./webapi/download?name=' + encodeURIComponent($row.artifactUrl)}">结果下载</a>
+
+          </td>
+          <td data-bind="text:$row.imageUrl"></td>
+        </tr>
+        <!-- /ko -->
+      </tbody>
+    </table>
+  </div>
+</div>
 </div>
 
 <div role="dialog" aria-hidden="true" class="modal fade" data-bind="modal: { show: showModal }">
@@ -126,23 +145,32 @@
     $('.page-content-area').ace_ajax('loadScripts', scripts, function(args) {
       function viewModel() {
         var self = this;
+        this.isCreate = ko.observable(false);
+        this.saveCreate = function(){
+          self.isCreate(false)
+          $.project.triggerBuild({id:args.name},function(data){
+            if(!data.exception){
+              self.loadData();
+            }
+          })
+        }
 
       //构建步骤接口
       stagesInfo = ko.observable("");
       this.stagesInfoList = ko.observableArray();
       $.MISC.stagesInfo.query(null,function(data){
-        console.log(data)
         data.unshift({"name":"全部","id":""});
         self.stagesInfoList(data);
       });
 
       this.triggerBuild = function(){
-        $.project.triggerBuild({id:args.name},function(data){
+        self.isCreate(true)
+        /*$.project.triggerBuild({id:args.name},function(data){
           if(!data.exception){
             alert("开始构建");
             self.loadData();
           }
-        })
+        })*/
       }
       self.projectTable = ko.observableArray();
       

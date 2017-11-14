@@ -19,7 +19,7 @@
 
     totalbuildstatus : function(param, callback, errorCallback) {
       $.ajax({
-        url:baseUrl + '/dashboard/totalbuildstatus',
+        url:baseUrl + '/statistics/buildStat',
         data:param,
         type:'GET',
         success:function(data){

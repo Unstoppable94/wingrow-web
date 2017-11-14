@@ -135,7 +135,7 @@
       }
     }).next().bind('click',function(){
       var _date = getTime($("#datePickerTotal").val());
-      $.dashboard.totalbuildstatus({startTime:_date[0],endTime:_date[1]},function(data){
+      $.dashboard.totalbuildstatus({beginTime:_date[0],endTime:_date[1]},function(data){
         initBuldingColumn(data);
       });   
     }); 
@@ -263,11 +263,11 @@
     };
     function initBuldingColumn(Data){
       var data = [
-        {name:'执行中',y:Data.running,color:"#23B7E5"},
-        {name:'等待中',y:Data.inqueue,color:"#FAD733"},
-        {name:'执行成功',y:Data.success,color:"#27C24C"},
-        {name:'执行失败',y:Data.failed,color:"#F05050"},
-        {name:'终止',y:Data.aborted,color:"#333"}
+        {name:'执行中',y:Data.data.running,color:"#23B7E5"},
+        {name:'等待中',y:Data.data.pending,color:"#FAD733"},
+        {name:'执行成功',y:Data.data.success,color:"#27C24C"},
+        {name:'执行失败',y:Data.data.failed,color:"#F05050"},
+        {name:'终止',y:Data.data.aborted,color:"#333"}
       ];
       $('#buildingColumn').highcharts({
         chart: {

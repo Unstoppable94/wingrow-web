@@ -42,7 +42,7 @@
                 <div class="form-group col-sm-6">
                     <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>项目类型</label>
                     <div class="col-sm-7">
-                        <select class="form-control input-sm" data-bind="options:$root.projectTypeList,optionsText:'name',optionsValue:'id',value:projectType"></select>
+                        <select class="form-control input-sm" data-bind="options:$root.projectTypeList,optionsText:'name',optionsValue:'id',value:projectType,event:{change:$root.whenchange}"></select>
                     </div> 
                 </div>
             </div>
@@ -91,7 +91,7 @@
                 <div class="form-group col-sm-6">
                     <label  class="col-sm-4 control-label"><span class="text-danger inline">*</span>密码</label>
                     <div class="col-sm-7">
-                        <input type="passowrd" class="form-control" data-bind="value:SCMPassword" />
+                        <input type="password" class="form-control" data-bind="value:SCMPassword" />
                     </div>
                 </div>
             </div>
@@ -120,7 +120,7 @@
             </div>
             <div class="row">
                 <div class="form-group col-sm-12">
-                    <label  class="col-sm-2 control-label"><span class="text-danger inline">*</span>额外属性</label>
+                    <label  class="col-sm-2 control-label">额外属性</label>
                     <div class="col-sm-9" style="width: 79.7%;">
                         <input class="form-control" rows="3" data-bind="value:exraProperties" style="margin-left:-5px"></input>
                     </div>
@@ -258,7 +258,7 @@
                 {'text':'手动',val:'manual'},
                 {'text':'crontab',val:'crontab'},
                 {'text':'固定时长',val:'other'}
-            ]);
+                ]);
 
 
 
@@ -266,6 +266,7 @@
             //     console.log(newValue)
             // });
             $.MISC.projectType.query(null,function(data){
+                console.log(data)
                 self.projectTypeList(data);
             });
             $.projectGroup.query(null,function(data){
@@ -292,6 +293,14 @@
                     if(val == 'crontab') $("#triggerCrontab").show();
                     if(val == 'other') $("#triggerOther").show();
                 })
+
+                self.whenchange = function(){
+                    var newType = self.staticVO().projectType;
+                    $.project.query({action:'newWorkflow',projectType:newType},function(data){
+                        var _data = data;
+                        self.dynamicsVO(buildBooleanData(_data.formProperties));
+                    })
+                }
             })
             function buildBooleanData(data){
                 $.each(data,function(n,v){
@@ -362,7 +371,6 @@
                 $('.modal-backdrop.fade.in').remove();
                 $('body').removeClass('modal-open');
             }
-
         }
         ko.applyBindings(new viewModel(), $('#page-content')[0]);
     })
