@@ -136,7 +136,6 @@
 				perPage : 10,
 				path : './webapi/project',
 				loader : function(result) {
-					console.log(result)
 					result.name_ = csc.util.trimName(result.name, 16);
 					result.desc_ = csc.util.trimName(result.desc, 21);
 					return result;

@@ -110,7 +110,8 @@
       });
 
       $.dashboard.totalbuildstatus(null,function(data){
-        initBuldingColumn(data);
+        if(data)
+          initBuldingColumn(data);
       });
 
       $.dashboard.totalbuildsdetail(null,function(data){
@@ -135,7 +136,7 @@
       }
     }).next().bind('click',function(){
       var _date = getTime($("#datePickerTotal").val());
-      $.dashboard.totalbuildstatus({beginTime:_date[0],endTime:_date[1]},function(data){
+      $.dashboard.totalbuildstatus({start:_date[0],end:_date[1]},function(data){
         initBuldingColumn(data);
       });   
     }); 
@@ -149,7 +150,7 @@
       }
     }).next().bind('click',function(){
       var _date = getTime($("#datePickerTotal").val())
-      $.dashboard.totalbuildsdetail({startTime:_date[0],endTime:_date[1]},function(data){
+      $.dashboard.totalbuildsdetail({start:_date[0],end:_date[1]},function(data){
         initBuldingLine(data);
       });
     }); 
@@ -262,66 +263,69 @@
       });
     };
     function initBuldingColumn(Data){
-      var data = [
-        {name:'执行中',y:Data.data.running,color:"#23B7E5"},
-        {name:'等待中',y:Data.data.pending,color:"#FAD733"},
-        {name:'执行成功',y:Data.data.success,color:"#27C24C"},
-        {name:'执行失败',y:Data.data.failed,color:"#F05050"},
-        {name:'终止',y:Data.data.aborted,color:"#333"}
-      ];
-      $('#buildingColumn').highcharts({
-        chart: {
-          type: 'column'
-        },
-        title: {
-          text: '不同状态构建数'
-        },
-        subtitle: {
-          text: false
-        },
-        credits: {
-          enabled: false
-        },
-        xAxis: {
-          type: 'category'
-          // categories: [
-          //   '执行中数量','等待中数量','执行成功数量','执行失败数量'
-          // ],
-          //crosshair: true
-        },
-        yAxis: {
-          min: 0,
-          title: {
-            text: '单位 (个)'
-          }
-        },
-        legend: {
-            enabled: false
-        },
-        tooltip: {
-          headerFormat: '<span style="font-size:10px">{point.key}: {point.y}</span>',
-          pointFormat: '',
-          footerFormat: '',
-         // shared: true,
-          useHTML: true
-        },
-        plotOptions: {
+      if(Data){
+        var data = [
+          {name:'执行中',y:Data.running,color:"#23B7E5"},
+          {name:'等待中',y:Data.pending,color:"#FAD733"},
+          {name:'执行成功',y:Data.success,color:"#27C24C"},
+          {name:'执行失败',y:Data.failed,color:"#F05050"},
+          {name:'终止',y:Data.aborted,color:"#333"}
+        ];
 
-          column: {
-            pointPadding: 0.2,
-            borderWidth: 0
-          }
-        },
-        series:[{
-          data: data
-        }]
-      });
+        $('#buildingColumn').highcharts({
+          chart: {
+            type: 'column'
+          },
+          title: {
+            text: '不同状态构建数'
+          },
+          subtitle: {
+            text: false
+          },
+          credits: {
+            enabled: false
+          },
+          xAxis: {
+            type: 'category'
+            // categories: [
+            //   '执行中数量','等待中数量','执行成功数量','执行失败数量'
+            // ],
+            //crosshair: true
+          },
+          yAxis: {
+            min: 0,
+            title: {
+              text: '单位 (个)'
+            }
+          },
+          legend: {
+              enabled: false
+          },
+          tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}: {point.y}</span>',
+            pointFormat: '',
+            footerFormat: '',
+           // shared: true,
+            useHTML: true
+          },
+          plotOptions: {
+
+            column: {
+              pointPadding: 0.2,
+              borderWidth: 0
+            }
+          },
+          series:[{
+            data: data
+          }]
+        });
+      }
     }
     
     function initBuldingLine(data){
       var Data = [];
       for(var i = 0; i < data.length; i++){
-        Data.push([data[i].runTime,data[i].number]);
+        Data.push([data[i].StartTime,data[i].Number]);
       }
       $('#buildingLine').highcharts({
         chart: {
