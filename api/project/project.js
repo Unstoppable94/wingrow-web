@@ -128,6 +128,21 @@
               errorCallback(data);
         }
       })
-    }
+    },
+    showlog : function(param, callback, errorCallback) {
+      $.ajax({
+        url: baseUrl + '/download',
+        data:param,
+        type:'GET',
+        success:function(data){
+          if(callback)
+              callback(data);
+        },
+        error:function(data){
+          if(errorCallback)
+              errorCallback(data);
+        }
+      })
+    },
   };
 }(window.jQuery);

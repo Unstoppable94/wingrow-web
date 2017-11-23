@@ -93,11 +93,12 @@
             <span data-bind="if:$row.lastStageStatus=='NOTBUILD'">没有构建</span>
           </td>
           <td data-bind="text:$row.duration + ' ms'"></td>
-          <td><a data-bind="attr:{href:'./webapi/download?name=' + encodeURIComponent($row.logUrl)}">日志下载</a></td>
+          <!-- <td><a data-bind="attr:{href:'./webapi/download?name=' + encodeURIComponent($row.logUrl)}">日志下载</a></td> -->
+          <td><a data-bind="event:{click:$root.downloadLog.bind($data,$row.logUrl)}">日志下载</a></td>
           <td>
             <span data-bind="if:!$row.artifactUrl">-</span>
-            <a data-bind="if:$row.artifactUrl,attr:{href:'./webapi/download?name=' + encodeURIComponent($row.artifactUrl)}">结果下载</a>
-
+            <!-- <a data-bind="if:$row.artifactUrl,attr:{href:'./webapi/download?name=' + encodeURIComponent($row.artifactUrl)}">结果下载</a> -->
+            <a data-bind="if:$row.artifactUrl,event:{click:$root.downloadRes.bind($data,$row.artifactUrl)}">结果下载</a>
           </td>
           <td data-bind="text:$row.imageUrl"></td>
         </tr>
@@ -219,6 +220,18 @@
         this.loadData(param);
       }
       
+      this.downloadLog = function(params){
+        $.project.showlog({name:encodeURIComponent(params)},function(data){
+          console.log(data)
+        })
+      }
+
+      this.downloadRes = function(params){
+        $.project.showlog({name:encodeURIComponent(params)},function(data){
+          console.log(data) 
+        })
+      }
+
       function buildProjects(data,content){
         var item = $("<div class='timeline-item'></div>").appendTo(content);
         item.append('<div class="item-stages"></div>');

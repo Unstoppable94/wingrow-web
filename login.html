@@ -190,7 +190,6 @@
 
 		this.formSubmit = function(){
 			$.login.post(self.loginVO(),function(data){
-				console.log(data)
 				if(!data.exception && data.authorization){
 					document.cookie = "authorization = " + data.authorization;
 					//if(!data.mustChangePassword)

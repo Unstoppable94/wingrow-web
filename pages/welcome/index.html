@@ -99,7 +99,7 @@
   var scripts = [null,"assets/lib/highcharts/highstock.js","api/dashboard/dashboard.js","assets/lib/moment/moment.js","assets/js/temp/tempData.js","assets/lib/bootstrap-daterangepicker/daterangepicker.js"];
   $('.page-content-area').ace_ajax('loadScripts', scripts, function(query) {
 
-    initChart();
+    
    // $.dashboard.totalstatus(null,function(data){
    //  console.log(data);
    // })
@@ -109,12 +109,12 @@
         initTotalBar(data);
       });
 
-      $.dashboard.totalbuildstatus(null,function(data){
+      $.dashboard.totalbuildstatus({start:_date[0],end:_date[1]},function(data){
         if(data)
           initBuldingColumn(data);
       });
 
-      $.dashboard.totalbuildsdetail(null,function(data){
+      $.dashboard.totalbuildsdetail({start:_date[0],end:_date[1]},function(data){
         initBuldingLine(data);
       });
 
@@ -128,7 +128,8 @@
     }
 
     $("#datePickerTotal").val(moment().format('YYYY/MM/DD HH:mm:ss')).daterangepicker({
-      startDate: moment(),
+      //startDate: moment(),
+      startDate: new Date((new Date()).getTime() - 7*24*3600*1000),
       timePicker:true,
       separator:'-',
       locale:{
@@ -140,9 +141,9 @@
         initBuldingColumn(data);
       });   
     }); 
-
+    
     $("#datePickerDetailed").val(moment().format('YYYY/MM/DD HH:mm:ss')).daterangepicker({
-      startDate: moment(),
+      startDate: new Date((new Date()).getTime() - 7*24*3600*1000),
       timePicker:true,
       separator:'-',
       locale:{
@@ -154,6 +155,9 @@
         initBuldingLine(data);
       });
     }); 
+
+    var _date = getTime($("#datePickerTotal").val());
+    initChart();
 
     $(".daterangepicker_input input").on("focus",function(){
       this.blur();
